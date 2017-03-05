@@ -1,0 +1,8 @@
+*.user
+*.user.*
+*.qmlc
+moc_*
+*.o
+*.qmake.*
+Makefile
+sweeper-madness
