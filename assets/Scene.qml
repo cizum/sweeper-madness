@@ -102,25 +102,23 @@ Item {
         onRestart: {
             root.restart()
         }
-        onPressR2: {
+        onPressSpace: {
             switch(root.phase) {
             case 1:
                 root.phase = 2
                 break
+            case 2:
+                root.phase = 3
+                break
             case 3:
                 root.phase = 4
                 break
-            case 4:
-                sweeper_1.sweep()
-                pierre.angle = pierre.angle - 0.12
-                pierre.speed = pierre.speed + 0.005
-                break
             }
         }
-        onPressR1: {
+        onPressUp: {
             switch(root.phase) {
-            case 2:
-                root.phase = 3
+            case 1:
+                pierre.move_up = true
                 break
             case 4:
                 sweeper_2.sweep()
@@ -129,10 +127,29 @@ Item {
                 break
             }
         }
-        onReleaseR1:{
+        onPressDown: {
             switch(root.phase) {
-            case 0:
-                root.phase = 1
+            case 1:
+                pierre.move_down = true
+                break
+            case 4:
+                sweeper_1.sweep()
+                pierre.angle = pierre.angle - 0.12
+                pierre.speed = pierre.speed + 0.005
+                break
+            }
+        }
+        onReleaseUp: {
+            switch(root.phase) {
+            case 1:
+                pierre.move_up = false
+                break
+            }
+        }
+        onReleaseDown: {
+            switch(root.phase) {
+            case 1:
+                pierre.move_down = false
                 break
             }
         }
@@ -188,10 +205,11 @@ Item {
     function phase0_update() {
         if (!root.ready)
             root.initialize(root.current_pierre)
+        root.phase = 1
     }
 
     function phase1_update() {
-        root.update_position()
+        pierre.update_phase1()
     }
 
     function phase2_update() {
@@ -233,20 +251,6 @@ Item {
     }
 
     function phase6_update() {
-    }
-
-    function update_position() {
-        var new_pos = pierre.yC + root.position_evo * 1.5
-        if (new_pos - piste.y >= piste.height) {
-            root.position_evo = -1
-            pierre.yC = piste.y + piste.height
-        }
-        else if (new_pos - piste.y <= 0) {
-            root.position_evo = 1
-            pierre.yC = piste.y
-        }
-        else
-            pierre.yC = new_pos
     }
 
     function update_angle() {

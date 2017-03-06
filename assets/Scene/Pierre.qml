@@ -17,6 +17,8 @@ Rectangle {
     property int team: 0
     property double speed: 0
     property double angle: 0
+    property bool move_up: false
+    property bool move_down: false
     transform: Rotation{
         origin.x: root.width / 2
         origin.y: root.height / 2
@@ -92,6 +94,14 @@ Rectangle {
     function update(){
         move()
         friction(0.005)
+    }
+
+    function stop(){
+        root.move_up = false
+        root.move_down = false
+    }
+    function update_phase1(){
+        root.yC = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
     }
 }
 

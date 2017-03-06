@@ -9,11 +9,11 @@ Item {
     property alias score0: score.score0
     property alias score1: score.score1
     property int phase: 0
-    property var messages: ["Press LEFT to start",
-                            "Press RIGHT to choose your position",
-                            "Press LEFT to validate your direction",
-                            "Press RIGHT to release your power",
-                            "Press LEFT and RIGHT to sweep !",
+    property var messages: ["",
+                            "Select your position with UP and DOWN, then press SPACE",
+                            "Press SPACE to validate your direction",
+                            "Press SPACE to release your power",
+                            "Press UP and DOWN to sweep !",
                             "Enjoy your dexterity",
                             ""]
 
