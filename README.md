@@ -20,3 +20,9 @@ $ make
 ```bash
 $ ./sweeper-madness
 ```
+
+## Screenshot
+
+![](/screenshot.png)
+
+
