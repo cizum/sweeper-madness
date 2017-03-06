@@ -13,8 +13,8 @@ Item {
     property double power_gap: 1
     property double angle: -20
     property int angle_evo: 1
-    property double angle_gap: 0.5
-    property double angle_max: 35
+    property double angle_gap: 0.4
+    property double angle_max: 25
     property double angle_rad: angle * Math.PI / 180
     property int current_pierre: 0
     property bool ready: false
@@ -194,6 +194,8 @@ Item {
                 pierre.speed = root.power / 30
             else
                 pierre.speed = 2
+            pierre.f_curl_dir = root.angle > 0 ? -1 : 1
+            pierre.f_curl = 0.05
             break
         case 5:
             sweeper_1.move_smooth()
@@ -209,7 +211,7 @@ Item {
     }
 
     function phase1_update() {
-        pierre.update_phase1()
+        pierre.update_phase1(piste)
     }
 
     function phase2_update() {
@@ -346,7 +348,6 @@ Item {
         }
     }
 
-
     function collisions() {
         for (var i = 0; i < 16; i++) {
             for (var j = i + 1; j < 16; j++) {
@@ -355,9 +356,10 @@ Item {
                     var a = root.slope(pierres.children[i].xC, pierres.children[i].yC, pierres.children[j].xC, pierres.children[j].yC)
                     pierres.children[i].angle = 180 + a
                     pierres.children[j].angle = a
-                    var new_speed = 1 / 2 * (pierres.children[i].speed + pierres.children[j].speed)
-                    pierres.children[i].speed = new_speed
-                    pierres.children[j].speed = new_speed
+                    var new_speed1 = (pierres.children[j].speed)
+                    var new_speed2 = (pierres.children[i].speed)
+                    pierres.children[i].speed = new_speed1
+                    pierres.children[j].speed = new_speed2
                 }
             }
         }

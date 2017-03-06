@@ -19,10 +19,16 @@ Rectangle {
     property double angle: 0
     property bool move_up: false
     property bool move_down: false
+
+    property double f_curl: 0.05
+    property int f_curl_dir: 1
+
+    property double handle_angle: 0
+
     transform: Rotation{
         origin.x: root.width / 2
         origin.y: root.height / 2
-        angle: root.angle
+        angle: root.handle_angle
     }
 
     Rectangle {
@@ -34,8 +40,9 @@ Rectangle {
         border.color: "#aaaaee"
     }
     Rectangle {
+        id: handle
         width: parent.width / 2
-        height: 1 * parent.height / 5
+        height: 5
         radius: width / 2 + 1
         anchors.centerIn: parent
         color: root.main_color
@@ -93,6 +100,7 @@ Rectangle {
 
     function update(){
         move()
+        curl()
         friction(0.005)
     }
 
@@ -100,8 +108,19 @@ Rectangle {
         root.move_up = false
         root.move_down = false
     }
-    function update_phase1(){
-        root.yC = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
+    function update_phase1(piste){
+        var new_yc = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
+        if (new_yc > piste.y + root.height && new_yc < piste.y + piste.height  - root.height)
+            root.yC = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
+    }
+
+    function curl(){
+        if (root.speed > 0 && root.f_curl > 0){
+            root.angle = root.angle + root.f_curl_dir *  root.f_curl
+            root.handle_angle = root.handle_angle + root.f_curl_dir * root.f_curl * 100
+            var new_f_curl = root.f_curl - 0.0001
+            root.f_curl = new_f_curl > 0 ? new_f_curl : 0
+        }
     }
 }
 
