@@ -2,9 +2,9 @@ import QtQuick 2.2
 
 Rectangle {
     id: root
-    width: 31
-    height: width / 2
-    radius: width / 2 + 1
+    width: 25
+    height: 4 * width / 5
+    radius: height / 3
     color: "#800000"
     border.color: "#101010"
     antialiasing: true
@@ -13,34 +13,17 @@ Rectangle {
     z: 1
     property double xC: 0
     property double yC: 0
-//    Rectangle{
-//        id: bretelle1
-//        width: 4
-//        height: parent.height - 2
-//        x: parent.width / 7
-//        anchors.verticalCenter: parent.verticalCenter
-//        border.width: 1
-//        border.color: parent.border.color
-//    }
-//    Rectangle{
-//        id: bretelle2
-//        width: 4
-//        height: parent.height - 2
-//        x: parent.width - parent.width / 7 - width
-//        anchors.verticalCenter: parent.verticalCenter
-//        border.width: 1
-//        border.color: parent.border.color
-//    }
 
     transform: Rotation{
         origin.x: root.width / 2
         origin.y: root.height / 2
         angle: 90
     }
+
     Rectangle {
         id: left_arm
         width: 6
-        height: 23
+        height: 15
         radius: width / 2
         z: -1
         x: 0
@@ -52,13 +35,41 @@ Rectangle {
         transform: Rotation{
             origin.x: 0
             origin.y: left_arm.height
-            angle: 50
+            angle: -20
+        }
+        Rectangle {
+            id: broom
+            width: 4
+            height: 15
+            radius: width / 2
+            z: -1
+            anchors.bottom: left_arm.top
+            anchors.bottomMargin: -3
+            anchors.horizontalCenter: left_arm.horizontalCenter
+            color: "#aaaaaa"
+            border.color: root.border.color
+            antialiasing: true
+            transform: Rotation{
+                origin.x: 0
+                origin.y: left_arm.height
+                angle: 5
+            }
+            Rectangle{
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 15
+                height: 6
+                color: "#505050"
+                border.color: "#101010"
+                antialiasing: true
+            }
         }
     }
+
     Rectangle {
         id: right_arm
         width: 6
-        height: 15
+        height: 18
         radius: width / 2
         z: -1
         x: parent.width - width
@@ -73,13 +84,40 @@ Rectangle {
             angle: -5
         }
     }
+
+    Rectangle {
+        id: leg
+        width: 10
+        height: 30
+        z: -1
+        radius: width / 2 + 1
+        anchors.top: parent.verticalCenter
+        x: parent.width / 2
+        color: root.color
+        border.color: "#101010"
+        antialiasing: true
+    }
+
+    Rectangle {
+        id: foot
+        width: 9
+        height: 7
+        z: -1
+        radius: width / 2 + 1
+        anchors.horizontalCenter: leg.horizontalCenter
+        anchors.bottom: leg.bottom
+        color: "#dddddd"
+        border.color: "#101010"
+        antialiasing: true
+    }
+
     Rectangle {
         id: head
         width: 17
         height: 17
         radius: width / 2 + 1
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: -5
+        anchors.verticalCenterOffset: -10
         color: hair_color()
         border.color: "#101010"
         antialiasing: true
