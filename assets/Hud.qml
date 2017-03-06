@@ -65,6 +65,7 @@ Item {
     }
 
     function show_winner(){
+        winner_screen.team = root.score0 > root.score1 ? 0 : 1
         winner_screen.visible = true
     }
 
