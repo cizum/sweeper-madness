@@ -189,6 +189,7 @@ Rectangle {
             }
         }
     }
+
     Behavior on y {
         id: move_smooth_y
         enabled: false

@@ -63,12 +63,12 @@ Item {
 
     Sweeper {
         id: sweeper_1
-        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x1_gap(pierre.width + 4, pierre.height + 5, root.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y1_gap(pierre.width + 4, pierre.height + 5, root.angle_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
+        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x1_gap(pierre.width + 4, pierre.height + 5, pierre.angle_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y1_gap(pierre.width + 4, pierre.height + 5, pierre.angle_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
-            angle: root.phase > 3 ? root.angle : 0
+            angle: root.phase > 3 ? pierre.angle : 0
         }
         color: pierre.main_color
     }
@@ -81,12 +81,12 @@ Item {
 
     Sweeper {
         id: sweeper_2
-        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x2_gap(pierre.width + 15, pierre.height + 5, root.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y2_gap(pierre.width + 15, pierre.height + 5, root.angle_rad) : piste.y - 40 ) : piste.y + 20
+        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x2_gap(pierre.width + 15, pierre.height + 5, pierre.angle_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y2_gap(pierre.width + 15, pierre.height + 5, pierre.angle_rad) : piste.y - 40 ) : piste.y + 20
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
-            angle: (root.phase > 3 ? root.angle : 0) + 180
+            angle: (root.phase > 3 ? pierre.angle : 0) + 180
         }
         color: pierre.main_color
     }
@@ -354,12 +354,20 @@ Item {
                 var d = d2(pierres.children[i].xC, pierres.children[i].yC, pierres.children[j].xC, pierres.children[j].yC)
                 if (d < (2 * pierre.radius) * (2 * pierre.radius)){
                     var a = root.slope(pierres.children[i].xC, pierres.children[i].yC, pierres.children[j].xC, pierres.children[j].yC)
-                    pierres.children[i].angle = 180 + a
-                    pierres.children[j].angle = a
-                    var new_speed1 = (pierres.children[j].speed)
-                    var new_speed2 = (pierres.children[i].speed)
-                    pierres.children[i].speed = new_speed1
-                    pierres.children[j].speed = new_speed2
+                    var a1 = pierres.children[i].angle
+                    var a2 = pierres.children[j].angle
+                    var s1 = pierres.children[i].speed
+                    var s2 = pierres.children[j].speed
+                    var th1rad = (a1 - a - 90) * Math.PI / 180
+                    var th2rad = (a2 - a - 90) * Math.PI / 180
+                    var cs11 = s1 * Math.cos(th1rad)
+                    var cs12 = s2 * Math.sin(th2rad)
+                    var cs21 = s1 * Math.sin(th1rad)
+                    var cs22 = s2 * Math.cos(th2rad)
+                    pierres.children[i].speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
+                    pierres.children[j].speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
+                    pierres.children[i].angle = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
+                    pierres.children[j].angle = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
                 }
             }
         }
