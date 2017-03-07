@@ -2,6 +2,8 @@
 
 `sweeper madness` is a game about curling.
 
+![screenshot](/sweeper-madness.gif)
+
 ## Requirements
 
 Qt5
@@ -20,9 +22,3 @@ $ make
 ```bash
 $ ./sweeper-madness
 ```
-
-## Screenshot
-
-![](/screenshot.png)
-
-
