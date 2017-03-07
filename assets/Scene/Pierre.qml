@@ -17,6 +17,7 @@ Rectangle {
     property int team: 0
     property double speed: 0
     property double angle: 0
+    property double angle_rad: angle * Math.PI / 180
     property bool move_up: false
     property bool move_down: false
 
@@ -111,7 +112,7 @@ Rectangle {
     function update_phase1(piste){
         var new_yc = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
         if (new_yc > piste.y + root.height && new_yc < piste.y + piste.height  - root.height)
-            root.yC = root.yC + ((root.move_up ? -1 : 0) + (root.move_down ? 1 : 0) )
+            root.yC = root.yC + ((root.move_up ? -1.5 : 0) + (root.move_down ? 1.5 : 0) )
     }
 
     function curl(){
