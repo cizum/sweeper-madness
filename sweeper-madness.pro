@@ -28,4 +28,5 @@ DISTFILES += \
     assets/menu/Button.qml \
     assets/menu/Title.qml \
     assets/scene/hud/DirectionBar.qml \
-    assets/scene/hud/Indications.qml
+    assets/scene/hud/Indications.qml \
+    assets/scene/Character.qml
