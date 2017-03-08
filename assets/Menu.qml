@@ -6,51 +6,30 @@ Item {
     id: root
     width: 1280
     height: 720
-    visible: opacity > 0
+    visible: root.opacity > 0
     signal start()
 
     Behavior on opacity {
         NumberAnimation {duration: 500}
     }
 
-    Rectangle{
+    Rectangle {
         id: background
         anchors.fill: parent
         color: "#ddddee"
     }
 
-    Text {
-        id: title_part_2
+    Title {
+        id: title
         text: "Sweeper Madness"
-        font.family: "PaintyPaint"
-        font.pixelSize: 120
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: -205
-        anchors.horizontalCenterOffset: -5
-        color: "#8989aa"
+        anchors.verticalCenterOffset: -180
         opacity: 0.8
     }
 
-    Text {
-        id: title_part_1
-        text: "Sweeper Madness"
-        font.family: "PaintyPaint"
-        font.pixelSize: 120
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: -200
-        color: "#ffffff"
-        opacity: 0.8
-    }
-
-    ButtonMenu {
+    Button {
         id: start_button
         text: "START"
-        width: 350
-        height: 180
-        textsize: 110
-        textcolor: "#8989aa"
-        textcolorHover: "#aaaadd"
-        textcolorDown: "#aaaaee"
         anchors.centerIn: parent
         anchors.verticalCenterOffset: 95
         onClicked: root.start()

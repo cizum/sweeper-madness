@@ -11,7 +11,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 DISTFILES += \
-    assets/menu/ButtonMenu.qml \
     assets/scene/hud/AngleBar.qml \
     assets/scene/hud/KeyDisplay.qml \
     assets/scene/hud/PowerBar.qml \
@@ -27,4 +26,6 @@ DISTFILES += \
     assets/scene/Sweeper.qml \
     assets/Menu.qml \
     assets/Scene.qml \
-    main.qml
+    main.qml \
+    assets/menu/Button.qml \
+    assets/menu/Title.qml
