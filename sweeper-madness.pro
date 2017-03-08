@@ -11,22 +11,20 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 DISTFILES += \
-    main.qml \
-    assets/Hud/Score.qml \
-    assets/Hud/TextNum.qml \
-    assets/Menu/ButtonMenu.qml \
-    assets/Sons/Sons.qml \
-    assets/Controls.qml \
-    assets/Hud.qml \
+    assets/menu/ButtonMenu.qml \
+    assets/scene/hud/AngleBar.qml \
+    assets/scene/hud/KeyDisplay.qml \
+    assets/scene/hud/PowerBar.qml \
+    assets/scene/hud/Score.qml \
+    assets/scene/hud/TextNum.qml \
+    assets/scene/hud/Winner.qml \
+    assets/scene/Controls.qml \
+    assets/scene/Hud.qml \
+    assets/scene/Launcher.qml \
+    assets/scene/Pierre.qml \
+    assets/scene/Pierres.qml \
+    assets/scene/Piste.qml \
+    assets/scene/Sweeper.qml \
     assets/Menu.qml \
     assets/Scene.qml \
-    assets/WindowBase.qml \
-    assets/Scene/Piste.qml \
-    assets/Hud/PowerBar.qml \
-    assets/Hud/AngleBar.qml \
-    assets/Scene/Sweeper.qml \
-    assets/Scene/Pierre.qml \
-    assets/Scene/Pierres.qml \
-    assets/Scene/Launcher.qml \
-    assets/Hud/Winner.qml \
-    assets/Hud/KeyDisplay.qml
+    main.qml

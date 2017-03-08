@@ -1,6 +1,6 @@
 import QtQuick 2.3
 import QtGraphicalEffects 1.0
-import "Scene"
+import "scene"
 
 Item {
     id: root

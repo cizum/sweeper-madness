@@ -1,6 +1,6 @@
 import QtQuick 2.2
 import QtGraphicalEffects 1.0
-import "Menu"
+import "menu"
 
 Item {
     id: root

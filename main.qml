@@ -3,9 +3,15 @@ import QtQuick.Window 2.1
 import QtGraphicalEffects 1.0
 import "assets"
 
-WindowBase {
-    id:root
-    property int game_state : 0
+Window {
+    id: root
+    visible: true
+    width: 1280
+    height: 720
+    color: "black"
+    property int game_state: 0
+
+    FontLoader {source: "fonts/paintypaint.ttf"}
 
     Timer {
         id: game_timer
@@ -13,7 +19,7 @@ WindowBase {
         running: true
         repeat: true
         onTriggered: {
-            switch(root.game_state){
+            switch(root.game_state) {
             case 0:
                 break
             case 1:
@@ -32,7 +38,7 @@ WindowBase {
     }
 
     Menu {
-        id:menu
+        id: menu
         anchors.fill: parent
         opacity: root.game_state == 0 ? 1 : 0
         onStart: root.game_state = 1

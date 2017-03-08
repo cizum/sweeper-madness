@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import "Hud"
+import "hud"
 
 Item {
     id:root
