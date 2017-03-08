@@ -6,6 +6,7 @@ Item {
     id: root
     width: 1280
     height: 720
+
     property int phase: 0 // phases : 0-start 1-position 2-angle 3-power 4-sweeping 5-score 6-winner
     property int position_evo: 1
     property double power: 0
@@ -33,7 +34,7 @@ Item {
     Hud {
         id: hud
         power: root.power
-        angle: root.angle
+        direction: root.angle
         phase: root.phase
         opacity: 0.8
     }

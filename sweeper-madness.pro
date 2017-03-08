@@ -11,8 +11,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 DISTFILES += \
-    assets/scene/hud/AngleBar.qml \
-    assets/scene/hud/KeyDisplay.qml \
     assets/scene/hud/PowerBar.qml \
     assets/scene/hud/Score.qml \
     assets/scene/hud/TextNum.qml \
@@ -28,4 +26,6 @@ DISTFILES += \
     assets/Scene.qml \
     main.qml \
     assets/menu/Button.qml \
-    assets/menu/Title.qml
+    assets/menu/Title.qml \
+    assets/scene/hud/DirectionBar.qml \
+    assets/scene/hud/Indications.qml

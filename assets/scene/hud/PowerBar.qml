@@ -6,16 +6,15 @@ Rectangle {
     width: 300
     height: 15
     color: "#bbbbcc"
-    //border.width: 1
-   // border.color: "#101010"
     property double power: 0
-    Item{
+
+    Item {
         width: (parent.width - 2) * power / 100
         height: parent.height - 2
         x: 1
         anchors.verticalCenter: parent.verticalCenter
-        clip:true
-        LinearGradient{
+        clip: true
+        LinearGradient {
             width: root.width - 2
             height: root.height - 2
             start: Qt.point(0, height / 2)
@@ -26,6 +25,5 @@ Rectangle {
                 GradientStop { position: 1.0; color: "#eeeefe" }
             }
         }
-        smooth: true
     }
 }
