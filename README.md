@@ -8,12 +8,10 @@
 
 Qt5
 
-For Ubuntu 16.04 or Debian 8.7, run:
+For Ubuntu or Debian, run:
 
 ```bash
-$ sudo apt install build-essential
-$ sudo apt install qtbase5-dev
-$ sudo apt install qt5-default
+$ sudo apt install build-essential qtbase5-dev qt5-default
 $ sudo apt install qtdeclarative5-dev
 $ sudo apt install qml-module-qtquick2
 $ sudo apt install qml-module-qtquick-window2
@@ -22,7 +20,7 @@ $ sudo apt install qml-module-qtgraphicaleffects
 
 ## Building
 
-To build it, on Ubuntu 16.04, run:
+To build it, on Ubuntu or Debian, run:
 
 ```bash
 $ qmake
