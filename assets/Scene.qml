@@ -36,19 +36,13 @@ Item {
         opacity: 0.8
     }
 
-    Item{
-        id: traces
-        anchors.fill: parent
-        function clear(){
-            var nt = traces.children.length
-            for (var t = nt - 1; t >= 0; t--){
-                traces.children[t].destroy()
-            }
-        }
+    Marks {
+        id: marks
     }
 
     Stones {
         id: stones
+        onMark: marks.add(x, y, a)
     }
     property alias stone: stones.current
 
@@ -263,7 +257,7 @@ Item {
     }
 
     function restart(){
-        traces.clear()
+        marks.clear()
         hud.initialize()
         root.current_stone = 0
         root.ready = false

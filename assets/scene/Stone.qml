@@ -55,26 +55,6 @@ Rectangle {
         }
     }
 
-    onXChanged: {
-        if (Math.random() > 0.8) {
-            var newObject = Qt.createQmlObject('
-                import QtQuick 2.3;
-                Rectangle {
-                    color:"#ffffff";
-                    radius:3;
-                    width: 3;
-                    height: 3;
-                    x:' + (root.xC-1) + '; y:'+ (root.yC-1) + ';' + '
-                    NumberAnimation on opacity{
-                        duration:2000;
-                        from:1.0; to:0.2
-                    }
-                }',
-                traces,
-                "dynamicSnippet1");
-        }
-    }
-
     function custom_move(speed, direction) {
         var direction_rad = direction * Math.PI / 180
         xC = xC + speed * Math.cos(direction_rad);

@@ -30,4 +30,6 @@ DISTFILES += \
     assets/scene/Character.qml \
     assets/scene/Stone.qml \
     assets/scene/Stones.qml \
-    assets/scene/Inputs.qml
+    assets/scene/Inputs.qml \
+    assets/scene/Marks.qml \
+    assets/scene/Mark.qml

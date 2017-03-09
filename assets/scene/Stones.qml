@@ -6,12 +6,21 @@ Item {
     property int count: 16
     property int current_n: 0
     property var current: root.children[current_n]
+    signal mark(int x, int y, int a)
 
     Repeater {
         model: root.count
 
         Stone {
             team: index % 2 == 0 ? 1 : 0
+            onXCChanged: {
+                var r = Math.random()
+                if (r < 0.2) {
+                    var x = xC + (1 - 10 * r)
+                    var y = yC + (1 - 10 * r)
+                    mark(x, y, direction)
+                }
+            }
         }
     }
 
