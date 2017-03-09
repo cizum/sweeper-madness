@@ -336,8 +336,8 @@ Item {
                     break
             }
         }
-        hud.score0 = scores[0]
-        hud.score1 = scores[1]
+        hud.score[0] = scores[0]
+        hud.score[1] = scores[1]
     }
 
     function compare(a, b) {
