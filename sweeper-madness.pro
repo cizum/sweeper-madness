@@ -29,4 +29,5 @@ DISTFILES += \
     assets/scene/hud/Indications.qml \
     assets/scene/Character.qml \
     assets/scene/Stone.qml \
-    assets/scene/Stones.qml
+    assets/scene/Stones.qml \
+    assets/scene/Inputs.qml

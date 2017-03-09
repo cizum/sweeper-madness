@@ -6,19 +6,16 @@ Item {
     id: root
     width: 1280
     height: 720
-
-    property int phase: 0 // phases : 0-start 1-position 2-angle 3-power 4-sweeping 5-score 6-winner
-    property int position_evo: 1
-    property double power: 0
-    property int power_evo: 1
-    property double power_gap: 1
-    property double angle: -20
-    property int angle_evo: 1
-    property double angle_gap: 0.4
-    property double angle_max: 25
-    property double angle_rad: angle * Math.PI / 180
+    property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int current_stone: 0
     property bool ready: false
+
+    Inputs {
+        id: inputs
+        position: piste.y + piste.height / 2
+        position_min: piste.y + stone.height
+        position_max: piste.y + piste.height - stone.height
+    }
 
     Rectangle {
         id: background
@@ -33,8 +30,8 @@ Item {
 
     Hud {
         id: hud
-        power: root.power
-        direction: root.angle
+        power: inputs.power
+        direction: inputs.direction
         phase: root.phase
         opacity: 0.8
     }
@@ -64,12 +61,12 @@ Item {
 
     Sweeper {
         id: sweeper_1
-        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.angle_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
+        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
-            angle: root.phase > 3 ? stone.angle : 0
+            angle: root.phase > 3 ? stone.direction : 0
         }
         color: stone.main_color
     }
@@ -82,12 +79,12 @@ Item {
 
     Sweeper {
         id: sweeper_2
-        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.angle_rad) : piste.y - 40 ) : piste.y + 20
+        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad) : piste.y - 40 ) : piste.y + 20
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
-            angle: (root.phase > 3 ? stone.angle : 0) + 180
+            angle: (root.phase > 3 ? stone.direction : 0) + 180
         }
         color: stone.main_color
     }
@@ -119,11 +116,11 @@ Item {
         onPressUp: {
             switch(root.phase) {
             case 1:
-                stone.move_up = true
+                inputs.position_sense = -1
                 break
             case 4:
                 sweeper_2.sweep()
-                stone.angle = stone.angle + 0.12
+                stone.direction = stone.direction + 0.12
                 stone.speed = stone.speed + 0.005
                 break
             }
@@ -131,11 +128,11 @@ Item {
         onPressDown: {
             switch(root.phase) {
             case 1:
-                stone.move_down = true
+                inputs.position_sense = 1
                 break
             case 4:
                 sweeper_1.sweep()
-                stone.angle = stone.angle - 0.12
+                stone.direction = stone.direction - 0.12
                 stone.speed = stone.speed + 0.005
                 break
             }
@@ -143,14 +140,14 @@ Item {
         onReleaseUp: {
             switch(root.phase) {
             case 1:
-                stone.move_up = false
+                inputs.position_sense = 0
                 break
             }
         }
         onReleaseDown: {
             switch(root.phase) {
             case 1:
-                stone.move_down = false
+                inputs.position_sense = 0
                 break
             }
         }
@@ -185,17 +182,14 @@ Item {
     onPhaseChanged: {
         switch(phase) {
         case 3:
-            stone.angle = root.angle
+            stone.direction = inputs.direction
             break
         case 4:
             launcher.move_smooth()
             sweeper_1.move_smooth()
             sweeper_2.move_smooth()
-            if (root.power > 60)
-                stone.speed = root.power / 30
-            else
-                stone.speed = 2
-            stone.f_curl_dir = root.angle > 0 ? -1 : 1
+            stone.speed = inputs.speed
+            stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
             stone.f_curl = 0.05
             break
         case 5:
@@ -212,19 +206,20 @@ Item {
     }
 
     function phase1_update() {
-        stone.update_phase1(piste)
+        inputs.update_position()
+        stone.yC = inputs.position
     }
 
     function phase2_update() {
         stone.custom_move(0.5 - Math.random() * 0.3, 0)
-        root.update_angle()
+        inputs.update_direction()
         if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
 
     function phase3_update() {
-        stone.custom_move(0.5 - Math.random() * 0.3, stone.angle)
-        root.update_power()
+        stone.custom_move(0.5 - Math.random() * 0.3, stone.direction)
+        inputs.update_power()
         if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
@@ -232,21 +227,21 @@ Item {
     function phase4_update() {
         stones.update()
         collisions()
-        if (stone.xC > piste.x + piste.end_sweep_line || stones.immobile())
+        if (stone.xC > piste.x + piste.end_sweep_line || ! stones.moving())
             root.phase = 5
     }
 
     function phase5_update() {
         stones.update()
         collisions()
-        if (stones.immobile()) {
+        if (! stones.moving()) {
             root.score()
-            if (root.current_stone == 15){
+            if (root.current_stone >= stones.count - 1){
                 root.phase = 6
                 hud.show_winner()
             }
             else{
-                root.current_stone = (root.current_stone + 1) % 16
+                root.current_stone = (root.current_stone + 1) % stones.count
                 root.ready = false
                 root.phase = 0
             }
@@ -256,48 +251,10 @@ Item {
     function phase6_update() {
     }
 
-    function update_angle() {
-        var new_angle = root.angle + angle_evo * (angle_gap + 0.1 * (root.angle_max - Math.abs(root.angle)))
-        if (new_angle >= root.angle_max) {
-            root.angle_evo = -1
-            if (angle_gap < 0.8)
-                root.angle_gap = root.angle_gap + 0.2
-            root.angle = root.angle_max
-        }
-        else if (new_angle <= -root.angle_max) {
-            root.angle_evo = 1
-            root.angle = -root.angle_max
-        }
-        else
-            root.angle = new_angle
-    }
-
-    function update_power() {
-        var new_power = root.power + power_evo * (power_gap + 0.05 * root.power)
-        if (new_power >= 100) {
-            root.power_evo = -1
-            if (power_gap < 7)
-                root.power_gap = root.power_gap + 1
-            root.power = 100
-        }
-        else if (new_power <= 0) {
-            root.power_evo = 1
-            root.power = 0
-        }
-        else
-            root.power = new_power
-    }
-
     function initialize(n) {
-        stones.current_n = n
-        root.position_evo = 1
         root.phase = 0
-        root.power = 0
-        root.power_evo = 1
-        root.power_gap = 1
-        root.angle = -20
-        root.angle_evo = 1
-        root.angle_gap = 1
+        inputs.initialize()
+        stones.current_n = n
         if ( n === 0)
             stones.initialize(piste)
         stone.xC = piste.x + 20
@@ -355,8 +312,8 @@ Item {
                 var d = d2(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
                 if (d < (2 * stone.radius) * (2 * stone.radius)){
                     var a = root.slope(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
-                    var a1 = stones.children[i].angle
-                    var a2 = stones.children[j].angle
+                    var a1 = stones.children[i].direction
+                    var a2 = stones.children[j].direction
                     var s1 = stones.children[i].speed
                     var s2 = stones.children[j].speed
                     var th1rad = (a1 - a - 90) * Math.PI / 180
@@ -367,8 +324,8 @@ Item {
                     var cs22 = s2 * Math.cos(th2rad)
                     stones.children[i].speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
                     stones.children[j].speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
-                    stones.children[i].angle = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
-                    stones.children[j].angle = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
+                    stones.children[i].direction = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
+                    stones.children[j].direction = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
                 }
             }
         }
