@@ -318,7 +318,7 @@ Item {
         var dmax = piste.r_target + stone.radius
         var array = []
         var k = 0
-        for (var i = 0; i < stones.max; i++){
+        for (var i = 0; i < stones.count; i++){
             var d = d2_target(stones.children[i].xC, stones.children[i].yC)
             if (d < dmax * dmax){
                 array[k] = [i, d]
