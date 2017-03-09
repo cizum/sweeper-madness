@@ -5,7 +5,7 @@ Item {
     property double position: 50
     property double power: 0
     property double direction: -20
-    property double speed: root.power < 50 ? 2 : root.power / 30
+    property double speed: root.power < 60 ? 2 : (root.power - 20) / 20
 
     property double position_min: 0
     property double position_max: 100

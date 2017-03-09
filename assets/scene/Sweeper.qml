@@ -13,6 +13,7 @@ Character {
         anchors.verticalCenterOffset: -parent.width / 2
         color: "#808090"
         border.color: root.borderColor
+        antialiasing: true
         transform: Rotation{
             origin.x: broom.width / 2
             origin.y: broom.height
@@ -27,6 +28,7 @@ Character {
             height: 6
             color: "#202020"
             border.color: root.borderColor
+            antialiasing: true
         }
 
         SequentialAnimation on height{
@@ -106,10 +108,48 @@ Character {
         }
     }
 
+    Behavior on x {
+        id: move_smooth_x
+        enabled: false
+        NumberAnimation {
+            duration: 2000
+            easing.type: "OutCubic"
+            NumberAnimation on duration {
+                running: move_smooth_x.enabled
+                from: 2000
+                to: 0
+                duration: 2000
+                easing.type: "OutCubic"
+                onStopped: move_smooth_x.enabled = false
+            }
+        }
+    }
+
+    Behavior on y {
+        id: move_smooth_y
+        enabled: false
+        NumberAnimation {
+            duration: 2000
+            NumberAnimation on duration {
+                running: move_smooth_y.enabled
+                from: 2000
+                to: 0
+                duration: 2000
+                easing.type: "OutCubic"
+                onStopped: move_smooth_y.enabled = false
+            }
+        }
+    }
+
     function sweep() {
         root.shake_head()
         broom_anim.restart()
         left_arm_anim.restart()
         right_arm_anim.restart()
+    }
+
+    function move_smooth(){
+        move_smooth_x.enabled = true;
+        move_smooth_y.enabled = true;
     }
 }

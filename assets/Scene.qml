@@ -48,45 +48,33 @@ Item {
 
     Launcher{
         id: launcher
-        xC: root.phase > 3 ? piste.x + piste.start_line + 20 : stone.xC - 3 * stone.width / 4
-        yC: root.phase > 3 ? piste.y + piste.height / 2 - stone.height / 3 : stone.yC - stone.height / 3
+        xC: root.xcl()
+        yC: root.ycl()
         color: stone.main_color
     }
 
     Sweeper {
         id: sweeper_1
-        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
+        xC: root.xcsw1()
+        yC: root.ycsw1()
+        color: stone.main_color
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
             angle: root.phase > 3 ? stone.direction : 0
         }
-        color: stone.main_color
-    }
-    function x1_gap(ax, ay, angle) {
-        return ax * Math.cos(angle) - ay * Math.sin(angle)
-    }
-    function y1_gap(ax, ay, angle) {
-        return ax * Math.sin(angle) + ay * Math.cos(angle)
     }
 
     Sweeper {
         id: sweeper_2
-        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad) : piste.y - 40 ) : piste.y + 20
+        xC: root.xcsw2()
+        yC: root.ycsw2()
+        color: stone.main_color
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
             angle: (root.phase > 3 ? stone.direction : 0) + 180
         }
-        color: stone.main_color
-    }
-    function x2_gap(ax, ay, angle) {
-        return ax * Math.cos(angle) + ay * Math.sin(angle)
-    }
-    function y2_gap(ax, ay, angle) {
-        return ax * Math.sin(angle) - ay * Math.cos(angle)
     }
 
     Controls {
@@ -179,9 +167,9 @@ Item {
             stone.direction = inputs.direction
             break
         case 4:
-            launcher.move_smooth()
             sweeper_1.move_smooth()
             sweeper_2.move_smooth()
+            launcher.move_smooth()
             stone.speed = inputs.speed
             stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
             stone.f_curl = 0.05
@@ -287,8 +275,7 @@ Item {
                     break
             }
         }
-        hud.score[0] = scores[0]
-        hud.score[1] = scores[1]
+        hud.score = scores
     }
 
     function compare(a, b) {
@@ -338,5 +325,81 @@ Item {
     function slope(x0, y0, x1, y1) {
         var a = Math.atan2(y1 - y0, x1 - x0)
         return a / Math.PI * 180
+    }
+
+
+    function xcl(){
+        if (root.phase < 1)
+            return piste.x
+        else if (root.phase > 3)
+            return piste.x + piste.start_line + 20
+        else
+            return stone.xC - 3 * stone.width / 4
+    }
+
+    function ycl(){
+        if (root.phase < 1)
+            return piste.y + piste.height / 2 - stone.height / 3
+        else if (root.phase > 3)
+            return piste.y + piste.height / 2 - stone.height / 3
+        else
+            return stone.yC - stone.height / 3
+    }
+    function xcsw1(){
+        if (root.phase < 4) {
+            return piste.x + 200
+        }
+        else if (root.phase == 4) {
+            return stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
+        }
+        else {
+            return piste.x + 1100
+        }
+    }
+
+    function ycsw1(){
+        if (root.phase < 4) {
+            return piste.y + piste.height - 20
+        }
+        else if (root.phase == 4) {
+            return stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
+        }
+        else {
+            return piste.y + piste.height + 40
+        }
+    }
+
+    function x1_gap(ax, ay, angle) {
+        return ax * Math.cos(angle) - ay * Math.sin(angle)
+    }
+
+    function y1_gap(ax, ay, angle) {
+        return ax * Math.sin(angle) + ay * Math.cos(angle)
+    }
+
+    function xcsw2(){
+        if (root.phase < 4)
+            return piste.x + 200
+        else if (root.phase == 4)
+            return stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+        else
+            return piste.x + 1100
+    }
+
+    function ycsw2(){
+        if (root.phase < 4)
+            return piste.y + 20
+        else if (root.phase == 4)
+            return stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+        else
+            return piste.y - 40
+    }
+
+    function x2_gap(ax, ay, angle) {
+        return ax * Math.cos(angle) + ay * Math.sin(angle)
+    }
+
+    function y2_gap(ax, ay, angle) {
+        return ax * Math.sin(angle) - ay * Math.cos(angle)
     }
 }

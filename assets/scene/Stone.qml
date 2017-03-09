@@ -37,7 +37,7 @@ Rectangle {
     }
     Rectangle {
         id: handle
-        width: parent.width / 2
+        width: 10
         height: 5
         radius: width / 2 + 1
         anchors.centerIn: parent

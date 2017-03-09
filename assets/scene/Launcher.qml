@@ -5,7 +5,7 @@ Character {
     width: 25
     height:25
     z: 1
-    moveDuration: 10000
+    property int moveDuration: 10000
     transform: Rotation{
         origin.x: root.width / 2
         origin.y: root.height / 2
@@ -102,5 +102,38 @@ Character {
         color: "#dddddd"
         border.color: "#101010"
         antialiasing: true
+    }
+
+    Behavior on x {
+        id: move_smooth_x
+        enabled: false
+        NumberAnimation {
+            NumberAnimation on duration {
+                running: move_smooth_x.enabled
+                from: 8000
+                to: 0
+                duration: 8000
+                onStopped: move_smooth_x.enabled = false
+            }
+        }
+    }
+
+    Behavior on y {
+        id: move_smooth_y
+        enabled: false
+        NumberAnimation {
+            NumberAnimation on duration {
+                running: move_smooth_y.enabled
+                from: 8000
+                to: 0
+                duration: 8000
+                onStopped: move_smooth_y.enabled = false
+            }
+        }
+    }
+
+    function move_smooth(){
+        move_smooth_x.enabled = true;
+        move_smooth_y.enabled = true;
     }
 }

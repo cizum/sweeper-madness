@@ -12,7 +12,6 @@ Item {
     property string color: "#800000"
     property string borderColor: "#101010"
     property int bodyRadius: 8
-    property int moveDuration: 2000
 
     Rectangle{
         id: body
@@ -37,47 +36,13 @@ Item {
             id: head_anim
             NumberAnimation{
                 duration: 100
-                from: -root.height / 4
-                to: -root.height / 4 - 6
+                from: -root.height / 4 + 3
+                to: -root.height / 4 - 3
             }
             NumberAnimation{
                 duration: 100
-                from: -root.height / 4 - 6
-                to: -root.height / 4
-            }
-        }
-    }
-
-    Behavior on x {
-        id: move_smooth_x
-        enabled: false
-        NumberAnimation {
-            duration: 2000
-            easing.type: "OutCubic"
-            NumberAnimation on duration {
-                running: move_smooth_x.enabled
-                from: root.moveDuration
-                to: 0
-                duration: root.moveDuration
-                easing.type: "OutCubic"
-                onStopped: move_smooth_x.enabled = false
-            }
-        }
-    }
-
-    Behavior on y {
-        id: move_smooth_y
-        enabled: false
-        NumberAnimation {
-            duration: 2000
-            easing.type: "OutCubic"
-            NumberAnimation on duration {
-                running: move_smooth_y.enabled
-                from: root.moveDuration
-                to: 0
-                duration: root.moveDuration
-                easing.type: "OutCubic"
-                onStopped: move_smooth_y.enabled = false
+                from: -root.height / 4 - 3
+                to: -root.height / 4 + 3
             }
         }
     }
@@ -102,10 +67,5 @@ Item {
 
     function shake_head() {
         head_anim.restart()
-    }
-
-    function move_smooth() {
-        move_smooth_x.enabled = true
-        move_smooth_y.enabled = true
     }
 }
