@@ -18,8 +18,6 @@ DISTFILES += \
     assets/scene/Controls.qml \
     assets/scene/Hud.qml \
     assets/scene/Launcher.qml \
-    assets/scene/Pierre.qml \
-    assets/scene/Pierres.qml \
     assets/scene/Piste.qml \
     assets/scene/Sweeper.qml \
     assets/Menu.qml \
@@ -29,4 +27,6 @@ DISTFILES += \
     assets/menu/Title.qml \
     assets/scene/hud/DirectionBar.qml \
     assets/scene/hud/Indications.qml \
-    assets/scene/Character.qml
+    assets/scene/Character.qml \
+    assets/scene/Stone.qml \
+    assets/scene/Stones.qml

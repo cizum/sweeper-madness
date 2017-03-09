@@ -17,7 +17,7 @@ Item {
     property double angle_gap: 0.4
     property double angle_max: 25
     property double angle_rad: angle * Math.PI / 180
-    property int current_pierre: 0
+    property int current_stone: 0
     property bool ready: false
 
     Rectangle {
@@ -50,28 +50,28 @@ Item {
         }
     }
 
-    Pierres {
-        id: pierres
+    Stones {
+        id: stones
     }
-    property alias pierre: pierres.current
+    property alias stone: stones.current
 
     Launcher{
         id: launcher
-        xC: root.phase > 3 ? piste.x + piste.start_line + 20 : pierre.xC - 3 * pierre.width / 4
-        yC: root.phase > 3 ? piste.y + piste.height / 2 - pierre.height / 3 : pierre.yC - pierre.height / 3
-        color: pierre.main_color
+        xC: root.phase > 3 ? piste.x + piste.start_line + 20 : stone.xC - 3 * stone.width / 4
+        yC: root.phase > 3 ? piste.y + piste.height / 2 - stone.height / 3 : stone.yC - stone.height / 3
+        color: stone.main_color
     }
 
     Sweeper {
         id: sweeper_1
-        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x1_gap(pierre.width + 4, pierre.height + 5, pierre.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y1_gap(pierre.width + 4, pierre.height + 5, pierre.angle_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
+        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.angle_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.angle_rad) : piste.y + piste.height + 40) : piste.y + piste.height - 20
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
-            angle: root.phase > 3 ? pierre.angle : 0
+            angle: root.phase > 3 ? stone.angle : 0
         }
-        color: pierre.main_color
+        color: stone.main_color
     }
     function x1_gap(ax, ay, angle) {
         return ax * Math.cos(angle) - ay * Math.sin(angle)
@@ -82,14 +82,14 @@ Item {
 
     Sweeper {
         id: sweeper_2
-        xC: root.phase > 3 ? (root.phase == 4 ? pierre.xC + x2_gap(pierre.width + 15, pierre.height + 5, pierre.angle_rad) : piste.x + 1100) : piste.x + 200
-        yC: root.phase > 3 ? (root.phase == 4 ? pierre.yC + y2_gap(pierre.width + 15, pierre.height + 5, pierre.angle_rad) : piste.y - 40 ) : piste.y + 20
+        xC: root.phase > 3 ? (root.phase == 4 ? stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.angle_rad) : piste.x + 1100) : piste.x + 200
+        yC: root.phase > 3 ? (root.phase == 4 ? stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.angle_rad) : piste.y - 40 ) : piste.y + 20
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
-            angle: (root.phase > 3 ? pierre.angle : 0) + 180
+            angle: (root.phase > 3 ? stone.angle : 0) + 180
         }
-        color: pierre.main_color
+        color: stone.main_color
     }
     function x2_gap(ax, ay, angle) {
         return ax * Math.cos(angle) + ay * Math.sin(angle)
@@ -119,38 +119,38 @@ Item {
         onPressUp: {
             switch(root.phase) {
             case 1:
-                pierre.move_up = true
+                stone.move_up = true
                 break
             case 4:
                 sweeper_2.sweep()
-                pierre.angle = pierre.angle + 0.12
-                pierre.speed = pierre.speed + 0.005
+                stone.angle = stone.angle + 0.12
+                stone.speed = stone.speed + 0.005
                 break
             }
         }
         onPressDown: {
             switch(root.phase) {
             case 1:
-                pierre.move_down = true
+                stone.move_down = true
                 break
             case 4:
                 sweeper_1.sweep()
-                pierre.angle = pierre.angle - 0.12
-                pierre.speed = pierre.speed + 0.005
+                stone.angle = stone.angle - 0.12
+                stone.speed = stone.speed + 0.005
                 break
             }
         }
         onReleaseUp: {
             switch(root.phase) {
             case 1:
-                pierre.move_up = false
+                stone.move_up = false
                 break
             }
         }
         onReleaseDown: {
             switch(root.phase) {
             case 1:
-                pierre.move_down = false
+                stone.move_down = false
                 break
             }
         }
@@ -185,18 +185,18 @@ Item {
     onPhaseChanged: {
         switch(phase) {
         case 3:
-            pierre.angle = root.angle
+            stone.angle = root.angle
             break
         case 4:
             launcher.move_smooth()
             sweeper_1.move_smooth()
             sweeper_2.move_smooth()
             if (root.power > 60)
-                pierre.speed = root.power / 30
+                stone.speed = root.power / 30
             else
-                pierre.speed = 2
-            pierre.f_curl_dir = root.angle > 0 ? -1 : 1
-            pierre.f_curl = 0.05
+                stone.speed = 2
+            stone.f_curl_dir = root.angle > 0 ? -1 : 1
+            stone.f_curl = 0.05
             break
         case 5:
             sweeper_1.move_smooth()
@@ -207,46 +207,46 @@ Item {
 
     function phase0_update() {
         if (!root.ready)
-            root.initialize(root.current_pierre)
+            root.initialize(root.current_stone)
         root.phase = 1
     }
 
     function phase1_update() {
-        pierre.update_phase1(piste)
+        stone.update_phase1(piste)
     }
 
     function phase2_update() {
-        pierre.custom_move(0.5 - Math.random() * 0.3, 0)
+        stone.custom_move(0.5 - Math.random() * 0.3, 0)
         root.update_angle()
-        if (pierre.xC > piste.x + piste.start_line)
+        if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
 
     function phase3_update() {
-        pierre.custom_move(0.5 - Math.random() * 0.3, pierre.angle)
+        stone.custom_move(0.5 - Math.random() * 0.3, stone.angle)
         root.update_power()
-        if (pierre.xC > piste.x + piste.start_line)
+        if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
 
     function phase4_update() {
-        pierres.update()
+        stones.update()
         collisions()
-        if (pierre.xC > piste.x + piste.end_sweep_line || pierres.immobile())
+        if (stone.xC > piste.x + piste.end_sweep_line || stones.immobile())
             root.phase = 5
     }
 
     function phase5_update() {
-        pierres.update()
+        stones.update()
         collisions()
-        if (pierres.immobile()) {
+        if (stones.immobile()) {
             root.score()
-            if (root.current_pierre == 15){
+            if (root.current_stone == 15){
                 root.phase = 6
                 hud.show_winner()
             }
             else{
-                root.current_pierre = (root.current_pierre + 1) % 16
+                root.current_stone = (root.current_stone + 1) % 16
                 root.ready = false
                 root.phase = 0
             }
@@ -289,7 +289,7 @@ Item {
     }
 
     function initialize(n) {
-        pierres.current_n = n
+        stones.current_n = n
         root.position_evo = 1
         root.phase = 0
         root.power = 0
@@ -299,27 +299,27 @@ Item {
         root.angle_evo = 1
         root.angle_gap = 1
         if ( n === 0)
-            pierres.initialize(piste)
-        pierre.xC = piste.x + 20
-        pierre.yC = piste.y + piste.height / 2
+            stones.initialize(piste)
+        stone.xC = piste.x + 20
+        stone.yC = piste.y + piste.height / 2
         root.ready = true
     }
 
     function restart(){
         traces.clear()
         hud.initialize()
-        root.current_pierre = 0
+        root.current_stone = 0
         root.ready = false
         root.phase = 0
     }
 
     function score() {
         var scores = [0, 0]
-        var dmax = piste.r_target + pierre.radius
+        var dmax = piste.r_target + stone.radius
         var array = []
         var k = 0
-        for (var i = 0; i < pierres.max; i++){
-            var d = d2_target(pierres.children[i].xC, pierres.children[i].yC)
+        for (var i = 0; i < stones.max; i++){
+            var d = d2_target(stones.children[i].xC, stones.children[i].yC)
             if (d < dmax * dmax){
                 array[k] = [i, d]
                 k ++
@@ -327,10 +327,10 @@ Item {
         }
         array.sort(compare)
         if (array.length > 0){
-            var t = pierres.children[array[0][0]].team
+            var t = stones.children[array[0][0]].team
             scores[t] = 1
             for (i = 1; i < array.length; i++){
-                if (pierres.children[array[i][0]].team === t)
+                if (stones.children[array[i][0]].team === t)
                     scores[t] ++
                 else
                     break
@@ -352,23 +352,23 @@ Item {
     function collisions() {
         for (var i = 0; i < 16; i++) {
             for (var j = i + 1; j < 16; j++) {
-                var d = d2(pierres.children[i].xC, pierres.children[i].yC, pierres.children[j].xC, pierres.children[j].yC)
-                if (d < (2 * pierre.radius) * (2 * pierre.radius)){
-                    var a = root.slope(pierres.children[i].xC, pierres.children[i].yC, pierres.children[j].xC, pierres.children[j].yC)
-                    var a1 = pierres.children[i].angle
-                    var a2 = pierres.children[j].angle
-                    var s1 = pierres.children[i].speed
-                    var s2 = pierres.children[j].speed
+                var d = d2(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
+                if (d < (2 * stone.radius) * (2 * stone.radius)){
+                    var a = root.slope(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
+                    var a1 = stones.children[i].angle
+                    var a2 = stones.children[j].angle
+                    var s1 = stones.children[i].speed
+                    var s2 = stones.children[j].speed
                     var th1rad = (a1 - a - 90) * Math.PI / 180
                     var th2rad = (a2 - a - 90) * Math.PI / 180
                     var cs11 = s1 * Math.cos(th1rad)
                     var cs12 = s2 * Math.sin(th2rad)
                     var cs21 = s1 * Math.sin(th1rad)
                     var cs22 = s2 * Math.cos(th2rad)
-                    pierres.children[i].speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
-                    pierres.children[j].speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
-                    pierres.children[i].angle = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
-                    pierres.children[j].angle = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
+                    stones.children[i].speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
+                    stones.children[j].speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
+                    stones.children[i].angle = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
+                    stones.children[j].angle = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
                 }
             }
         }

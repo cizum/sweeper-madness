@@ -9,7 +9,7 @@ Item{
 
     Repeater{
         model: root.max
-        Pierre{
+        Stone{
             team: index % 2 == 0 ? 1 : 0
         }
     }
