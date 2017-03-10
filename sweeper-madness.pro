@@ -33,4 +33,6 @@ DISTFILES += \
     assets/scene/Inputs.qml \
     assets/scene/Marks.qml \
     assets/scene/Mark.qml \
-    assets/tools.js
+    assets/tools.js \
+    assets/scene/SoundManager.qml
+

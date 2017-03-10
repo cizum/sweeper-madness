@@ -4,7 +4,7 @@ Item {
     id: root
     width: 100
     height: 600
-    property var score: [0, 0]
+    property var score: [0, 0]   
 
     TextNum {
         id: score_text_1

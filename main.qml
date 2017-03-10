@@ -34,7 +34,8 @@ Window {
     Scene {
         id: scene
         anchors.centerIn: parent
-        opacity: root.game_state == 1 ? 1 : 0
+        opacity: gameState === 1 ? 1 : 0
+        gameState: root.game_state
     }
 
     Menu {
