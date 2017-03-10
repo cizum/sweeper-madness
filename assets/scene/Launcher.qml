@@ -3,7 +3,7 @@ import QtQuick 2.2
 Character {
     id: root
     width: 22
-    height:25
+    height:22
     z: 1
     headOffset: -12
     property int moveDuration: 10000
@@ -81,8 +81,8 @@ Character {
 
     Rectangle {
         id: leg
-        width: 8
-        height: 25
+        width: 9
+        height: 27
         z: -1
         radius: width / 2 + 1
         anchors.top: parent.verticalCenter

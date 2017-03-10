@@ -12,6 +12,8 @@ Item {
     property int current_end: 0
     property int stones_count: 2
     property int current_stone: 0
+    property var colors: ["#ffff55", "#cc2020", "#55ff55", "#5555ff"]
+    property int current_team: (root.current_stone + 1) % 2
     property int gameState: 0
     property bool ready: false
 
@@ -67,14 +69,14 @@ Item {
         id: launcher
         xC: root.xcl()
         yC: root.ycl()
-        color: if (stone) stone.main_color
+        color: root.colors[root.current_team]
     }
 
     Sweeper {
         id: sweeper_1
         xC: root.xcsw1()
         yC: root.ycsw1()
-        color: if (stone) stone.main_color
+        color: root.colors[root.current_team]
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
@@ -86,7 +88,7 @@ Item {
         id: sweeper_2
         xC: root.xcsw2()
         yC: root.ycsw2()
-        color: if (stone) stone.main_color
+        color: root.colors[root.current_team]
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
