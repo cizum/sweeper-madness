@@ -6,6 +6,7 @@ Item {
     property int gameState: 0
 
     signal applauseForPoint()
+    signal collide()
 
     onGameStateChanged: {
         if(root.gameState) {
@@ -17,6 +18,7 @@ Item {
     }
 
     onApplauseForPoint: pointApplause.play()
+    onCollide: collision.play()
 
 
     Audio{
@@ -29,7 +31,9 @@ Item {
         source: "../../sounds/applause.ogg"
     }
 
-
-
+    Audio{
+        id: collision
+        source: "../../sounds/choc.ogg"
+    }
 }
 
