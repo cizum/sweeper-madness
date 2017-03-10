@@ -238,6 +238,8 @@ Item {
         if (! stones.moving()) {
             root.score()
             if (root.current_stone >= stones.count - 1) {
+                hud.total_score = [hud.total_score[0] + hud.score[0], hud.total_score[1] + hud.score[1]]
+                hud.score = [0, 0]
                 if (root.current_end == root.ends - 1) {
                     root.phase = 6
                     hud.show_winner()

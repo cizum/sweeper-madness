@@ -7,6 +7,7 @@ Item {
     property alias power: power_bar.power
     property alias direction: direction_bar.direction
     property alias score: score_display.score
+    property alias total_score: score_display.total_score
     property alias phase: indications.phase
     property alias current_end: score_display.current_end
     property alias ends: score_display.ends
@@ -41,10 +42,10 @@ Item {
     }
 
     function show_winner() {
-        if (root.score[0] === root.score[1])
+        if (root.total_score[0] === root.total_score[1])
             winner_display.team = -1
         else
-            winner_display.team = root.score[0] > root.score[1] ? 0 : 1
+            winner_display.team = root.total_score[0] > root.total_score[1] ? 0 : 1
         winner_display.visible = true
     }
 
