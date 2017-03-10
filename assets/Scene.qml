@@ -1,5 +1,6 @@
 import QtQuick 2.3
 import QtGraphicalEffects 1.0
+import "tools.js" as Tools
 import "scene"
 
 Item {
@@ -258,13 +259,13 @@ Item {
         var array = []
         var k = 0
         for (var i = 0; i < stones.count; i++){
-            var d = d2_target(stones.children[i].xC, stones.children[i].yC)
+            var d = dsquare_target(stones.children[i].xC, stones.children[i].yC)
             if (d < dmax * dmax){
                 array[k] = [i, d]
                 k ++
             }
         }
-        array.sort(compare)
+        array.sort(Tools.compare)
         if (array.length > 0){
             var t = stones.children[array[0][0]].team
             scores[t] = 1
@@ -278,55 +279,22 @@ Item {
         hud.score = scores
     }
 
-    function compare(a, b) {
-        if (a[1] === b[1]) {
-            return 0
-        }
-        else {
-            return (a[1] < b[1]) ? -1 : 1
-        }
-    }
-
     function collisions() {
         for (var i = 0; i < 16; i++) {
             for (var j = i + 1; j < 16; j++) {
-                var d = d2(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
+                var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
                 if (d < (2 * stone.radius) * (2 * stone.radius)){
-                    var a = root.slope(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
-                    var a1 = stones.children[i].direction
-                    var a2 = stones.children[j].direction
-                    var s1 = stones.children[i].speed
-                    var s2 = stones.children[j].speed
-                    var th1rad = (a1 - a - 90) * Math.PI / 180
-                    var th2rad = (a2 - a - 90) * Math.PI / 180
-                    var cs11 = s1 * Math.cos(th1rad)
-                    var cs12 = s2 * Math.sin(th2rad)
-                    var cs21 = s1 * Math.sin(th1rad)
-                    var cs22 = s2 * Math.cos(th2rad)
-                    stones.children[i].speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
-                    stones.children[j].speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
-                    stones.children[i].direction = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
-                    stones.children[j].direction = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
+                    Tools.solve_collision(stones.children[j], stones.children[i])
                 }
             }
         }
     }
 
-    function d2(x0, y0, x1, y1) {
-        return (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)
-    }
-
-    function d2_target(xc, yc) {
+    function dsquare_target(xc, yc) {
         var xt = piste.x + piste.x_target
         var yt = piste.y + piste.y_target
-        return d2(xc, yc, xt, yt)
+        return Tools.dsquare(xc, yc, xt, yt)
     }
-
-    function slope(x0, y0, x1, y1) {
-        var a = Math.atan2(y1 - y0, x1 - x0)
-        return a / Math.PI * 180
-    }
-
 
     function xcl(){
         if (root.phase < 1)
@@ -345,12 +313,13 @@ Item {
         else
             return stone.yC - stone.height / 3
     }
+
     function xcsw1(){
         if (root.phase < 4) {
             return piste.x + 200
         }
         else if (root.phase == 4) {
-            return stone.xC + x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
+            return stone.xC + Tools.x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
         }
         else {
             return piste.x + 1100
@@ -362,26 +331,18 @@ Item {
             return piste.y + piste.height - 20
         }
         else if (root.phase == 4) {
-            return stone.yC + y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
+            return stone.yC + Tools.y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
         }
         else {
             return piste.y + piste.height + 40
         }
     }
 
-    function x1_gap(ax, ay, angle) {
-        return ax * Math.cos(angle) - ay * Math.sin(angle)
-    }
-
-    function y1_gap(ax, ay, angle) {
-        return ax * Math.sin(angle) + ay * Math.cos(angle)
-    }
-
     function xcsw2(){
         if (root.phase < 4)
             return piste.x + 200
         else if (root.phase == 4)
-            return stone.xC + x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+            return stone.xC + Tools.x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
         else
             return piste.x + 1100
     }
@@ -390,16 +351,8 @@ Item {
         if (root.phase < 4)
             return piste.y + 20
         else if (root.phase == 4)
-            return stone.yC + y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+            return stone.yC + Tools.y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
         else
             return piste.y - 40
-    }
-
-    function x2_gap(ax, ay, angle) {
-        return ax * Math.cos(angle) + ay * Math.sin(angle)
-    }
-
-    function y2_gap(ax, ay, angle) {
-        return ax * Math.sin(angle) - ay * Math.cos(angle)
     }
 }
