@@ -9,6 +9,7 @@ Item {
     height: 720
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int current_stone: 0
+    property int gameState: 0
     property bool ready: false
 
     Inputs {
@@ -37,6 +38,15 @@ Item {
         opacity: 0.8
     }
 
+    SoundManager{
+        id: soundManager
+        gameState: root.gameState
+        Connections{
+            target: hud
+            onScoreChanged: soundManager.applauseForPoint()
+        }
+    }
+
     Marks {
         id: marks
     }
@@ -45,6 +55,7 @@ Item {
         id: stones
         onMark: marks.add(x, y, a)
     }
+
     property alias stone: stones.current
 
     Launcher{
@@ -276,7 +287,9 @@ Item {
                     break
             }
         }
-        hud.score = scores
+
+        if(hud.score[0] !== scores[0] || hud.score[1] !== scores[1])
+            hud.score = scores
     }
 
     function collisions() {
