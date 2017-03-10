@@ -7,7 +7,7 @@ Item {
     width: 1280
     height: 720
     visible: root.opacity > 0
-    signal start()
+    signal start(int ends, int stones)
 
     Behavior on opacity {
         NumberAnimation {duration: 500}
@@ -27,12 +27,30 @@ Item {
         opacity: 0.8
     }
 
+    Column{
+        anchors.centerIn: parent
+        width: end_choicelist.width
+        ChoiceList{
+            id: end_choicelist
+            name: "Number of ends"
+            index: 0
+            model: [1, 2, 3, 4, 5, 6, 7, 8]
+        }
+
+        ChoiceList{
+            id: stones_choicelist
+            name: "Number of stones"
+            index: 3
+            model: [2, 4, 8, 16]
+        }
+    }
+
     Button {
         id: start_button
         text: "START"
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: 95
-        onClicked: root.start()
+        anchors.verticalCenterOffset: 200
+        onClicked: root.start(end_choicelist.current, stones_choicelist.current)
     }
 }
 

@@ -9,13 +9,13 @@ Item {
 
     Rectangle{
         anchors.fill: parent
-        color: root.colors[team]
+        color: root.team == -1 ? "#55ffff" : root.colors[team]
         opacity: 0.8
     }
 
     Text {
         id: title_part_2
-        text: root.names[team] + " Team wins !"
+        text: root.team == -1 ? "Draw..." : root.names[team] + " Team wins !"
         font.family: "PaintyPaint"
         font.pixelSize: 130
         anchors.centerIn: parent

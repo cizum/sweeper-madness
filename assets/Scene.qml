@@ -8,6 +8,9 @@ Item {
     width: 1280
     height: 720
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
+    property int ends: 1
+    property int current_end: 0
+    property int stones_count: 2
     property int current_stone: 0
     property int gameState: 0
     property bool ready: false
@@ -35,6 +38,8 @@ Item {
         power: inputs.power
         direction: inputs.direction
         phase: root.phase
+        current_end: root.current_end
+        ends: root.ends
         opacity: 0.8
     }
 
@@ -53,23 +58,23 @@ Item {
 
     Stones {
         id: stones
+        count: root.stones_count
         onMark: marks.add(x, y, a)
     }
-
     property alias stone: stones.current
 
     Launcher{
         id: launcher
         xC: root.xcl()
         yC: root.ycl()
-        color: stone.main_color
+        color: if (stone) stone.main_color
     }
 
     Sweeper {
         id: sweeper_1
         xC: root.xcsw1()
         yC: root.ycsw1()
-        color: stone.main_color
+        color: if (stone) stone.main_color
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
@@ -81,7 +86,7 @@ Item {
         id: sweeper_2
         xC: root.xcsw2()
         yC: root.ycsw2()
-        color: stone.main_color
+        color: if (stone) stone.main_color
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
@@ -230,9 +235,14 @@ Item {
         collisions()
         if (! stones.moving()) {
             root.score()
-            if (root.current_stone >= stones.count - 1){
-                root.phase = 6
-                hud.show_winner()
+            if (root.current_stone >= stones.count - 1) {
+                if (root.current_end == root.ends - 1) {
+                    root.phase = 6
+                    hud.show_winner()
+                }
+                else {
+                    root.new_end()
+                }
             }
             else{
                 root.current_stone = (root.current_stone + 1) % stones.count
@@ -254,6 +264,13 @@ Item {
         stone.xC = piste.x + 20
         stone.yC = piste.y + piste.height / 2
         root.ready = true
+    }
+
+    function new_end(){
+        root.current_end = root.current_end + 1
+        root.current_stone = 0
+        root.ready = false
+        root.phase = 0
     }
 
     function restart(){
@@ -293,10 +310,11 @@ Item {
     }
 
     function collisions() {
-        for (var i = 0; i < 16; i++) {
-            for (var j = i + 1; j < 16; j++) {
+        for (var i = 0; i < stones.count; i++) {
+            for (var j = i + 1; j < stones.count; j++) {
                 var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
                 if (d < (2 * stone.radius) * (2 * stone.radius)){
+                    soundManager.collide()
                     Tools.solve_collision(stones.children[j], stones.children[i])
                 }
             }

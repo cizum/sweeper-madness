@@ -42,6 +42,10 @@ Window {
         id: menu
         anchors.fill: parent
         opacity: root.game_state == 0 ? 1 : 0
-        onStart: root.game_state = 1
+        onStart: {
+            scene.ends = ends
+            scene.stones_count = stones
+            root.game_state = 1
+        }
     }
 }

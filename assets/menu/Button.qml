@@ -4,7 +4,7 @@ MouseArea {
     id: root
     width: 350
     height: 180
-    property int textsize: 110
+    property int textsize: 90
     property color textcolor: "#8989aa"
     property color textcolorHover: "#ccccdd"
     property color textcolorDown: "#eeeeff"
