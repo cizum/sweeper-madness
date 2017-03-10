@@ -40,8 +40,8 @@ Item {
         ChoiceList{
             id: stones_choicelist
             name: "Number of stones"
-            index: 3
-            model: [2, 4, 8, 16]
+            index: 4
+            model: [2, 4, 8, 12, 16]
         }
     }
 
