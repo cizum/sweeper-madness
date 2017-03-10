@@ -45,6 +45,7 @@ Character {
             }
         }
     }
+
     Rectangle {
         id: left_arm
         width: 6

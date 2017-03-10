@@ -2,9 +2,10 @@ import QtQuick 2.2
 
 Character {
     id: root
-    width: 25
+    width: 22
     height:25
     z: 1
+    headOffset: -12
     property int moveDuration: 10000
     transform: Rotation{
         origin.x: root.width / 2
@@ -80,8 +81,8 @@ Character {
 
     Rectangle {
         id: leg
-        width: 10
-        height: 30
+        width: 8
+        height: 25
         z: -1
         radius: width / 2 + 1
         anchors.top: parent.verticalCenter

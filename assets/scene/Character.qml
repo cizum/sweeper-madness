@@ -12,6 +12,7 @@ Item {
     property string color: "#800000"
     property string borderColor: "#101010"
     property int bodyRadius: 8
+    property int headOffset: -root.height / 4
 
     Rectangle{
         id: body
@@ -28,7 +29,7 @@ Item {
         height: 17
         radius: width / 2 + 1
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: -root.height / 4
+        anchors.verticalCenterOffset: root.headOffset
         color: root.hair_color()
         border.color: root.borderColor
         antialiasing: true
@@ -36,13 +37,13 @@ Item {
             id: head_anim
             NumberAnimation{
                 duration: 100
-                from: -root.height / 4 + 3
-                to: -root.height / 4 - 3
+                from: root.headOffset + 3
+                to: root.headOffset - 3
             }
             NumberAnimation{
                 duration: 100
-                from: -root.height / 4 - 3
-                to: -root.height / 4 + 3
+                from: root.headOffset- 3
+                to: root.headOffset + 3
             }
         }
     }
