@@ -1,6 +1,7 @@
 *.user
 *.user.*
 *.qmlc
+*.jsc
 moc_*
 *.o
 *.qmake.*
