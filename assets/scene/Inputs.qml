@@ -52,7 +52,7 @@ Item {
         var new_power = root.power + root.power_sense * evo_speed
         if (new_power >= root.power_max) {
             root.power_sense = -1
-            if (root.power_gap < 6)
+            if (root.power_gap < 4)
                 root.power_gap = root.power_gap + 1
             root.power = root.power_max
         }
