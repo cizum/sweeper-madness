@@ -26,6 +26,7 @@ Character {
             anchors.horizontalCenter: parent.horizontalCenter
             width: 15
             height: 6
+            radius: 3
             color: "#202020"
             border.color: root.borderColor
             antialiasing: true

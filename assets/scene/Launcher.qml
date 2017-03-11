@@ -53,6 +53,7 @@ Character {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 15
                 height: 6
+                radius: 3
                 color: "#505050"
                 border.color: "#101010"
                 antialiasing: true
