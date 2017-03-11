@@ -8,6 +8,7 @@ Item {
     width: 1280
     height: 720
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
+    property int players: 2
     property int ends: 1
     property int current_end: 0
     property int stones_count: 2
@@ -22,6 +23,62 @@ Item {
         position: piste.y + piste.height / 2
         position_min: piste.y + stone.height
         position_max: piste.y + piste.height - stone.height
+    }
+
+    Madi{
+        id: madi
+        playing: (root.players == 1 && root.current_team == 0)
+        onPressSpace: {
+            switch(root.phase) {
+            case 1:
+                root.phase = 2
+                break
+            case 2:
+                root.phase = 3
+                break
+            case 3:
+                root.phase = 4
+                break
+            }
+        }
+        onPressUp: {
+            switch(root.phase) {
+            case 1:
+                inputs.position_sense = -1
+                break
+            case 4:
+                sweeper_2.sweep()
+                stone.direction = stone.direction + 0.12
+                stone.speed = stone.speed + 0.005
+                break
+            }
+        }
+        onPressDown: {
+            switch(root.phase) {
+            case 1:
+                inputs.position_sense = 1
+                break
+            case 4:
+                sweeper_1.sweep()
+                stone.direction = stone.direction - 0.12
+                stone.speed = stone.speed + 0.005
+                break
+            }
+        }
+        onReleaseUp: {
+            switch(root.phase) {
+            case 1:
+                inputs.position_sense = 0
+                break
+            }
+        }
+        onReleaseDown: {
+            switch(root.phase) {
+            case 1:
+                inputs.position_sense = 0
+                break
+            }
+        }
     }
 
     Rectangle {
@@ -98,9 +155,14 @@ Item {
 
     Controls {
         id: controls
+        playing: ! madi.playing
         onRestart: {
             root.restart()
         }
+        onDebug: {
+            hud.debug = ! hud.debug
+        }
+
         onPressSpace: {
             switch(root.phase) {
             case 1:
@@ -155,7 +217,9 @@ Item {
     }
 
     function update() {
-        switch(phase) {
+        if (madi.playing)
+            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, piste)
+        switch(root.phase) {
         case 0:
             root.phase0_update()
             break
@@ -226,6 +290,8 @@ Item {
     }
 
     function phase4_update() {
+        stone.prevision()
+        hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
         collisions()
         if (stone.xC > piste.x + piste.end_sweep_line || ! stones.moving())
@@ -233,6 +299,8 @@ Item {
     }
 
     function phase5_update() {
+        stone.prevision()
+        hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
         collisions()
         if (! stones.moving()) {
@@ -267,6 +335,7 @@ Item {
             stones.initialize(piste)
         stone.xC = piste.x + 20
         stone.yC = piste.y + piste.height / 2
+        madi.ready = false
         root.ready = true
     }
 
@@ -318,7 +387,8 @@ Item {
             for (var j = i + 1; j < stones.count; j++) {
                 var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
                 if (d < (2 * stone.radius) * (2 * stone.radius)){
-                    soundManager.collide()
+                    if (stones.children[i].speed > 0 || stones.children[j].speed > 0)
+                        soundManager.collide()
                     Tools.solve_collision(stones.children[j], stones.children[i])
                 }
             }

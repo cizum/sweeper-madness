@@ -8,7 +8,7 @@ Window {
     visible: true
     width: 1280
     height: 720
-    color: "black"
+    color: "#ddddee"
     property int game_state: 0
 
     FontLoader {source: "fonts/paintypaint.ttf"}
@@ -45,6 +45,7 @@ Window {
         onStart: {
             scene.ends = ends
             scene.stones_count = stones
+            scene.players = players
             root.game_state = 1
         }
     }

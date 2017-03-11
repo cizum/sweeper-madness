@@ -4,6 +4,7 @@ import "hud"
 Item {
     id:root
     anchors.fill: parent
+    property bool debug: false
     property alias power: power_bar.power
     property alias direction: direction_bar.direction
     property alias score: score_display.score
@@ -35,10 +36,39 @@ Item {
         x: 1050
     }
 
+    Text{
+        id: end
+        text: "End " + (root.current_end + 1) + "/" + root.ends
+        color:"#bbbbcc"
+        font.pixelSize: 40
+        font.family: "PaintyPaint"
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: - 180
+    }
+
     Indications {
         id: indications
         y:50
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Stone{
+        id: ghost
+        main_color: "#ffffff"
+        opacity: 0.4
+        visible: root.debug && (root.phase == 4 || root.phase == 5)
+
+        Behavior on xC {
+            NumberAnimation { duration: 80 }
+        }
+        Behavior on yC {
+            NumberAnimation { duration: 80 }
+        }
+    }
+
+    function update_ghost(xC, yC) {
+        ghost.xC = xC
+        ghost.yC = yC
     }
 
     function show_winner() {

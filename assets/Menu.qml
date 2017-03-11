@@ -7,7 +7,7 @@ Item {
     width: 1280
     height: 720
     visible: root.opacity > 0
-    signal start(int ends, int stones)
+    signal start(int ends, int stones, int players)
 
     Behavior on opacity {
         NumberAnimation {duration: 500}
@@ -27,21 +27,37 @@ Item {
         opacity: 0.8
     }
 
-    Column{
+    Column {
         anchors.centerIn: parent
-        width: end_choicelist.width
-        ChoiceList{
-            id: end_choicelist
-            name: "Number of ends"
-            index: 0
-            model: [1, 2, 3, 4, 5, 6, 7, 8]
+        anchors.verticalCenterOffset: 20
+        width: paramters_row.width
+        spacing: 20
+
+        Row {
+            id: paramters_row
+            spacing: 10
+
+            ChoiceList {
+                id: stones_choicelist
+                name: "stones"
+                index: 2
+                model: [2, 4, 8, 12, 16]
+            }
+
+            ChoiceList {
+                id: end_choicelist
+                name: index === 0 ? "end" : "ends"
+                index: 2
+                model: [1, 2, 3, 4, 5, 6, 7, 8]
+            }
         }
 
         ChoiceList{
-            id: stones_choicelist
-            name: "Number of stones"
-            index: 4
-            model: [2, 4, 8, 12, 16]
+            id: players_choicelist
+            name: index === 0 ? "player" : "players"
+            index: 1
+            model: [1, 2]
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 
@@ -49,8 +65,8 @@ Item {
         id: start_button
         text: "START"
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: 200
-        onClicked: root.start(end_choicelist.current, stones_choicelist.current)
+        anchors.verticalCenterOffset: 250
+        onClicked: root.start(end_choicelist.current, stones_choicelist.current, players_choicelist.current)
     }
 }
 
