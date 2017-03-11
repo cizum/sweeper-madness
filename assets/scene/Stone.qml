@@ -8,7 +8,7 @@ Rectangle {
     color: "#aaaaaa"
     border.color: "#101010"
     x: xC - width / 2
-    y: yC - height /2
+    y: yC - height / 2
     property double xC: 0
     property double yC: 0
     property int team: 0
@@ -20,10 +20,12 @@ Rectangle {
     property double angle: 0
     property double f_curl: 0.05
     property int f_curl_dir: 1
+    property double xC_future: 0
+    property double yC_future: 0
 
     transform: Rotation{
-        origin.x: root.width / 2
-        origin.y: root.height / 2
+        origin.x: root.width / 2 + 1
+        origin.y: root.height / 2 + 1
         angle: root.angle
     }
 
@@ -87,6 +89,26 @@ Rectangle {
             var new_f_curl = root.f_curl - 0.0001
             root.f_curl = new_f_curl > 0 ? new_f_curl : 0
         }
+    }
+
+    function prevision(){
+        var s = root.speed
+        var d = root.direction
+        var x = root.xC
+        var y = root.yC
+        var fc = root.f_curl
+
+        while(s > 0) {
+            var d_rad = d * Math.PI / 180
+            x = x + s * Math.cos(d_rad);
+            y = y + s * Math.sin(d_rad);
+            s = s - 0.005
+            d = d + root.f_curl_dir * fc
+            fc = fc - 0.0001
+            if (fc < 0) fc = 0
+        }
+        root.xC_future = x
+        root.yC_future = y
     }
 }
 
