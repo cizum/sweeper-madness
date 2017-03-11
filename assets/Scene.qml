@@ -17,6 +17,7 @@ Item {
     property int current_team: (root.current_stone + 1) % 2
     property int gameState: 0
     property bool ready: false
+    signal menu()
 
     Inputs {
         id: inputs
@@ -28,57 +29,11 @@ Item {
     Madi{
         id: madi
         playing: (root.players == 1 && root.current_team == 0)
-        onPressSpace: {
-            switch(root.phase) {
-            case 1:
-                root.phase = 2
-                break
-            case 2:
-                root.phase = 3
-                break
-            case 3:
-                root.phase = 4
-                break
-            }
-        }
-        onPressUp: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = -1
-                break
-            case 4:
-                sweeper_2.sweep()
-                stone.direction = stone.direction + 0.12
-                stone.speed = stone.speed + 0.005
-                break
-            }
-        }
-        onPressDown: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 1
-                break
-            case 4:
-                sweeper_1.sweep()
-                stone.direction = stone.direction - 0.12
-                stone.speed = stone.speed + 0.005
-                break
-            }
-        }
-        onReleaseUp: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 0
-                break
-            }
-        }
-        onReleaseDown: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 0
-                break
-            }
-        }
+        onPressSpace: root.onSpacePressed()
+        onPressUp: root.onUpPressed()
+        onPressDown: root.onDownPressed()
+        onReleaseUp: root.onUpReleased()
+        onReleaseDown: root.onDownReleased()
     }
 
     Rectangle {
@@ -156,64 +111,15 @@ Item {
     Controls {
         id: controls
         playing: ! madi.playing
-        onRestart: {
-            root.restart()
-        }
-        onDebug: {
-            hud.debug = ! hud.debug
-        }
-
-        onPressSpace: {
-            switch(root.phase) {
-            case 1:
-                root.phase = 2
-                break
-            case 2:
-                root.phase = 3
-                break
-            case 3:
-                root.phase = 4
-                break
-            }
-        }
-        onPressUp: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = -1
-                break
-            case 4:
-                sweeper_2.sweep()
-                stone.direction = stone.direction + 0.12
-                stone.speed = stone.speed + 0.005
-                break
-            }
-        }
-        onPressDown: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 1
-                break
-            case 4:
-                sweeper_1.sweep()
-                stone.direction = stone.direction - 0.12
-                stone.speed = stone.speed + 0.005
-                break
-            }
-        }
-        onReleaseUp: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 0
-                break
-            }
-        }
-        onReleaseDown: {
-            switch(root.phase) {
-            case 1:
-                inputs.position_sense = 0
-                break
-            }
-        }
+        onRestart: root.restart()
+        onMute: soundManager.mute = ! soundManager.mute
+        onDebug: hud.debug = ! hud.debug
+        onMenu: if (root.phase == 6) root.menu()
+        onPressSpace: root.onSpacePressed()
+        onPressUp: root.onUpPressed()
+        onPressDown: root.onDownPressed()
+        onReleaseUp: root.onUpReleased()
+        onReleaseDown: root.onDownReleased()
     }
 
     function update() {
@@ -221,25 +127,24 @@ Item {
             madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, piste)
         switch(root.phase) {
         case 0:
-            root.phase0_update()
+            root.p_start_update()
             break
         case 1:
-            root.phase1_update()
+            root.p_position_update()
             break
         case 2:
-            root.phase2_update()
+            root.p_direction_update()
             break
         case 3:
-            root.phase3_update()
+            root.p_power_update()
             break
         case 4:
-            root.phase4_update()
+            root.p_sweep_update()
             break
         case 5:
-            root.phase5_update()
+            root.p_score_update()
             break
         case 6:
-            root.phase6_update()
             break
         }
     }
@@ -264,32 +169,88 @@ Item {
         }
     }
 
-    function phase0_update() {
+    function onSpacePressed() {
+        switch(root.phase) {
+        case 1:
+            root.phase = 2
+            break
+        case 2:
+            root.phase = 3
+            break
+        case 3:
+            root.phase = 4
+            break
+        }
+    }
+
+    function onUpPressed() {
+        switch(root.phase) {
+        case 1:
+            inputs.position_sense = -1
+            break
+        case 4:
+            sweeper_2.sweep()
+            stone.direction = stone.direction + 0.12
+            stone.speed = stone.speed + 0.005
+            break
+        }
+    }
+
+    function onDownPressed() {
+        switch(root.phase) {
+        case 1:
+            inputs.position_sense = 1
+            break
+        case 4:
+            sweeper_1.sweep()
+            stone.direction = stone.direction - 0.12
+            stone.speed = stone.speed + 0.005
+            break
+        }
+
+    }
+    function onUpReleased() {
+        switch(root.phase) {
+        case 1:
+            inputs.position_sense = 0
+            break
+        }
+
+    }
+    function onDownReleased() {
+        switch(root.phase) {
+        case 1:
+            inputs.position_sense = 0
+            break
+        }
+    }
+
+    function p_start_update() {
         if (!root.ready)
             root.initialize(root.current_stone)
         root.phase = 1
     }
 
-    function phase1_update() {
+    function p_position_update() {
         inputs.update_position()
         stone.yC = inputs.position
     }
 
-    function phase2_update() {
+    function p_direction_update() {
         stone.custom_move(0.5 - Math.random() * 0.3, 0)
         inputs.update_direction()
         if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
 
-    function phase3_update() {
+    function p_power_update() {
         stone.custom_move(0.5 - Math.random() * 0.3, stone.direction)
         inputs.update_power()
         if (stone.xC > piste.x + piste.start_line)
             root.phase = 4
     }
 
-    function phase4_update() {
+    function p_sweep_update() {
         stone.prevision()
         hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
@@ -298,7 +259,7 @@ Item {
             root.phase = 5
     }
 
-    function phase5_update() {
+    function p_score_update() {
         stone.prevision()
         hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
@@ -310,6 +271,7 @@ Item {
                 hud.score = [0, 0]
                 if (root.current_end == root.ends - 1) {
                     root.phase = 6
+                    stones.current_n = 0
                     hud.show_winner()
                 }
                 else {
@@ -322,9 +284,6 @@ Item {
                 root.phase = 0
             }
         }
-    }
-
-    function phase6_update() {
     }
 
     function initialize(n) {
@@ -349,6 +308,7 @@ Item {
     function restart(){
         marks.clear()
         hud.initialize()
+        root.current_end = 0
         root.current_stone = 0
         root.ready = false
         root.phase = 0

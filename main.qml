@@ -36,6 +36,10 @@ Window {
         anchors.centerIn: parent
         opacity: gameState === 1 ? 1 : 0
         gameState: root.game_state
+        onMenu: {
+            root.game_state = 0
+            scene.phase = 0
+        }
     }
 
     Menu {
@@ -46,6 +50,7 @@ Window {
             scene.ends = ends
             scene.stones_count = stones
             scene.players = players
+            scene.restart()
             root.game_state = 1
         }
     }

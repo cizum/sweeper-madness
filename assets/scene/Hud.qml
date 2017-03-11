@@ -25,6 +25,16 @@ Item {
         y: 525
     }
 
+    Text{
+        id: end
+        text: "End " + (root.current_end + 1) + "/" + root.ends
+        color:"#bbbbcc"
+        font.pixelSize: 40
+        font.family: "PaintyPaint"
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: - 180
+    }
+
     Winner {
         id: winner_display
         visible: false
@@ -34,16 +44,6 @@ Item {
         id: score_display
         anchors.verticalCenter: parent.verticalCenter
         x: 1050
-    }
-
-    Text{
-        id: end
-        text: "End " + (root.current_end + 1) + "/" + root.ends
-        color:"#bbbbcc"
-        font.pixelSize: 40
-        font.family: "PaintyPaint"
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: - 180
     }
 
     Indications {
