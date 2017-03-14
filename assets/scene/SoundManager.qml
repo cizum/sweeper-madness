@@ -46,7 +46,7 @@ Item {
         text: root.mute ? "Mute" : "Sound on"
         font.family: "PaintyPaint"
         font.pixelSize: 30
-        color: "#202020"
+        color: "#404040"
         anchors.right: parent.right
         anchors.rightMargin: 15
         y: 5

@@ -4,6 +4,7 @@ import "hud"
 Item {
     id:root
     anchors.fill: parent
+    property int style: 0
     property bool debug: false
     property alias power: power_bar.power
     property alias direction: direction_bar.direction
@@ -17,18 +18,20 @@ Item {
         id: power_bar
         anchors.horizontalCenter: parent.horizontalCenter
         y: 650
+        style: root.style
     }
 
     DirectionBar {
         id: direction_bar
         anchors.horizontalCenter: parent.horizontalCenter
         y: 525
+        style: root.style
     }
 
     Text{
         id: end
         text: "End " + (root.current_end + 1) + "/" + root.ends
-        color:"#bbbbcc"
+        color: root.style == 1 ? "#303030" : "#bbbbcc"
         font.pixelSize: 40
         font.family: "PaintyPaint"
         anchors.centerIn: parent
@@ -38,25 +41,29 @@ Item {
     Winner {
         id: winner_display
         visible: false
+        style: root.style
     }
 
     Score {
         id: score_display
         anchors.verticalCenter: parent.verticalCenter
         x: 1050
+        color: root.style == 1 ? "#eeeeee" : "#101010"
     }
 
     Indications {
         id: indications
         y:50
         anchors.horizontalCenter: parent.horizontalCenter
+        color: root.style == 1 ? "#eeeeee" : "#101010"
     }
 
     Stone{
         id: ghost
-        main_color: "#ffffff"
+        team: 2
         opacity: 0.4
         visible: root.debug && (root.phase == 4 || root.phase == 5)
+        style: root.style
 
         Behavior on xC {
             NumberAnimation { duration: 80 }

@@ -3,9 +3,11 @@ import QtQuick 2.2
 Item {
     id: root
     anchors.fill: parent
+    property int style: 0
     property int team: 0
-    property var names: ["Yellow", "Red", "Green", "Blue"]
-    property var colors: ["#ffff55", "#cc2020", "#55ff55", "#5555ff"]
+    property var names: root.style == 0 ? ["Yellow", "Red"] : ["Gold", "Turquoise"]
+    property var colors: root.style == 0 ? ["#ffff55", "#cc2020"] : ["#ffbb00", "#00bbff"]
+    property var colorsNeon: ["#ffbb00", "#00bbff"]
 
     Rectangle{
         anchors.fill: parent

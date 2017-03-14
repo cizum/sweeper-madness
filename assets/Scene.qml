@@ -17,16 +17,17 @@ Item {
     property int current_team: (root.current_stone + 1) % 2
     property int gameState: 0
     property bool ready: false
+    property int style: 0
     signal menu()
 
     Inputs {
         id: inputs
-        position: piste.y + piste.height / 2
-        position_min: piste.y + stone.height
-        position_max: piste.y + piste.height - stone.height
+        position: sheet.y + sheet.height / 2
+        position_min: sheet.y + stone.height
+        position_max: sheet.y + sheet.height - stone.height
     }
 
-    Madi{
+    Madi {
         id: madi
         playing: (root.players == 1 && root.current_team == 0)
         onPressSpace: root.onSpacePressed()
@@ -36,15 +37,16 @@ Item {
         onReleaseDown: root.onDownReleased()
     }
 
-    Rectangle {
+    Background {
         id: background
         anchors.fill: parent
-        color: "#ddddee"
+        style: root.style
     }
 
-    Piste {
-        id: piste
+    Sheet {
+        id: sheet
         anchors.centerIn: parent
+        style: root.style
     }
 
     Hud {
@@ -55,6 +57,7 @@ Item {
         current_end: root.current_end
         ends: root.ends
         opacity: 0.8
+        style: root.style
     }
 
     SoundManager{
@@ -68,12 +71,14 @@ Item {
 
     Marks {
         id: marks
+        style: root.style
     }
 
     Stones {
         id: stones
         count: root.stones_count
         onMark: marks.add(x, y, a)
+        style: root.style
     }
     property alias stone: stones.current
 
@@ -81,14 +86,16 @@ Item {
         id: launcher
         xC: root.xcl()
         yC: root.ycl()
-        color: root.colors[root.current_team]
+        style: root.style
+        team: root.current_team
     }
 
     Sweeper {
         id: sweeper_1
         xC: root.xcsw1()
         yC: root.ycsw1()
-        color: root.colors[root.current_team]
+        style: root.style
+        team: root.current_team
         transform: Rotation {
             origin.x: sweeper_1.width / 2
             origin.y: sweeper_1.height / 2
@@ -100,7 +107,8 @@ Item {
         id: sweeper_2
         xC: root.xcsw2()
         yC: root.ycsw2()
-        color: root.colors[root.current_team]
+        style: root.style
+        team: root.current_team
         transform: Rotation {
             origin.x: sweeper_2.width / 2
             origin.y: sweeper_2.height / 2
@@ -120,11 +128,12 @@ Item {
         onPressDown: root.onDownPressed()
         onReleaseUp: root.onUpReleased()
         onReleaseDown: root.onDownReleased()
+        onChangeStyle: root.style = (root.style + 1) % 2
     }
 
     function update() {
         if (madi.playing)
-            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, piste)
+            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, sheet)
         switch(root.phase) {
         case 0:
             root.p_start_update()
@@ -239,14 +248,14 @@ Item {
     function p_direction_update() {
         stone.custom_move(0.5 - Math.random() * 0.3, 0)
         inputs.update_direction()
-        if (stone.xC > piste.x + piste.start_line)
+        if (stone.xC > sheet.x + sheet.start_line)
             root.phase = 4
     }
 
     function p_power_update() {
         stone.custom_move(0.5 - Math.random() * 0.3, stone.direction)
         inputs.update_power()
-        if (stone.xC > piste.x + piste.start_line)
+        if (stone.xC > sheet.x + sheet.start_line)
             root.phase = 4
     }
 
@@ -255,7 +264,7 @@ Item {
         hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
         collisions()
-        if (stone.xC > piste.x + piste.end_sweep_line || ! stones.moving())
+        if (stone.xC > sheet.x + sheet.end_sweep_line || ! stones.moving())
             root.phase = 5
     }
 
@@ -291,9 +300,9 @@ Item {
         inputs.initialize()
         stones.current_n = n
         if ( n === 0)
-            stones.initialize(piste)
-        stone.xC = piste.x + 20
-        stone.yC = piste.y + piste.height / 2
+            stones.initialize(sheet)
+        stone.xC = sheet.x + 20
+        stone.yC = sheet.y + sheet.height / 2
         madi.ready = false
         root.ready = true
     }
@@ -316,7 +325,7 @@ Item {
 
     function score() {
         var scores = [0, 0]
-        var dmax = piste.r_target + stone.radius
+        var dmax = sheet.r_target + stone.radius
         var array = []
         var k = 0
         for (var i = 0; i < stones.count; i++){
@@ -356,68 +365,68 @@ Item {
     }
 
     function dsquare_target(xc, yc) {
-        var xt = piste.x + piste.x_target
-        var yt = piste.y + piste.y_target
+        var xt = sheet.x + sheet.x_target
+        var yt = sheet.y + sheet.y_target
         return Tools.dsquare(xc, yc, xt, yt)
     }
 
     function xcl(){
         if (root.phase < 1)
-            return piste.x
+            return sheet.x
         else if (root.phase > 3)
-            return piste.x + piste.start_line + 20
+            return sheet.x + sheet.start_line + 20
         else
             return stone.xC - 3 * stone.width / 4
     }
 
     function ycl(){
         if (root.phase < 1)
-            return piste.y + piste.height / 2 - stone.height / 3
+            return sheet.y + sheet.height / 2 - stone.height / 3
         else if (root.phase > 3)
-            return piste.y + piste.height / 2 - stone.height / 3
+            return sheet.y + sheet.height / 2 - stone.height / 3
         else
             return stone.yC - stone.height / 3
     }
 
     function xcsw1(){
         if (root.phase < 4) {
-            return piste.x + 200
+            return sheet.x + 200
         }
         else if (root.phase == 4) {
             return stone.xC + Tools.x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
         }
         else {
-            return piste.x + 1100
+            return sheet.x + 1100
         }
     }
 
     function ycsw1(){
         if (root.phase < 4) {
-            return piste.y + piste.height - 20
+            return sheet.y + sheet.height - 20
         }
         else if (root.phase == 4) {
             return stone.yC + Tools.y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
         }
         else {
-            return piste.y + piste.height + 40
+            return sheet.y + sheet.height + 40
         }
     }
 
     function xcsw2(){
         if (root.phase < 4)
-            return piste.x + 200
+            return sheet.x + 200
         else if (root.phase == 4)
             return stone.xC + Tools.x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
         else
-            return piste.x + 1100
+            return sheet.x + 1100
     }
 
     function ycsw2(){
         if (root.phase < 4)
-            return piste.y + 20
+            return sheet.y + 20
         else if (root.phase == 4)
             return stone.yC + Tools.y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
         else
-            return piste.y - 40
+            return sheet.y - 40
     }
 }

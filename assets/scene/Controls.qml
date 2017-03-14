@@ -15,6 +15,7 @@ Item {
     signal debug()
     signal menu()
     signal mute()
+    signal changeStyle()
 
     Keys.onPressed: {
         if (!event.isAutoRepeat){
@@ -23,6 +24,9 @@ Item {
             }
             else if (event.key === Qt.Key_M) {
                 root.mute()
+            }
+            else if (event.key === Qt.Key_S) {
+                root.changeStyle()
             }
             else if (root.playing) {
                 if (event.key === Qt.Key_Up) {

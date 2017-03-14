@@ -18,7 +18,6 @@ DISTFILES += \
     assets/scene/Controls.qml \
     assets/scene/Hud.qml \
     assets/scene/Launcher.qml \
-    assets/scene/Piste.qml \
     assets/scene/Sweeper.qml \
     assets/Menu.qml \
     assets/Scene.qml \
@@ -27,14 +26,30 @@ DISTFILES += \
     assets/menu/Title.qml \
     assets/scene/hud/DirectionBar.qml \
     assets/scene/hud/Indications.qml \
-    assets/scene/Character.qml \
     assets/scene/Stone.qml \
     assets/scene/Stones.qml \
     assets/scene/Inputs.qml \
     assets/scene/Marks.qml \
-    assets/scene/Mark.qml \
     assets/tools.js \
     assets/scene/SoundManager.qml \
     assets/menu/ChoiceList.qml \
-    assets/scene/Madi.qml
+    assets/scene/Madi.qml \
+    assets/styles/neon/StoneNeon.qml \
+    assets/styles/classic/StoneClassic.qml \
+    assets/styles/classic/BackgroundClassic.qml \
+    assets/styles/neon/BackgroundNeon.qml \
+    assets/scene/Background.qml \
+    assets/scene/Sheet.qml \
+    assets/styles/classic/SheetClassic.qml \
+    assets/styles/neon/SheetNeon.qml \
+    assets/styles/classic/MarkClassic.qml \
+    assets/styles/neon/MarkNeon.qml \
+    assets/styles/classic/SweeperClassic.qml \
+    assets/styles/neon/SweeperNeon.qml \
+    assets/styles/classic/LauncherClassic.qml \
+    assets/styles/neon/LauncherNeon.qml \
+    assets/styles/classic/PowerBarClassic.qml \
+    assets/styles/neon/PowerBarNeon.qml \
+    assets/styles/classic/DirectionBarClassic.qml \
+    assets/styles/neon/DirectionBarNeon.qml
 

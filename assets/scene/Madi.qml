@@ -24,7 +24,7 @@ Item {
     onPressUp: root.up = true
     onReleaseUp: root.up = false
 
-    function think(phase, position, direction, power, stone, piste) {
+    function think(phase, position, direction, power, stone, sheet) {
         switch(phase) {
         case 1:
             if (!root.ready) {
@@ -63,7 +63,7 @@ Item {
             }
             break
         case 4:
-            analyze(stone, piste)
+            analyze(stone, sheet)
             break
         }
     }
@@ -83,16 +83,16 @@ Item {
         return false
     }
 
-    function analyze(stone, piste) {
+    function analyze(stone, sheet) {
         if (stone.speed > 0 && stone.direction > -60 && stone.direction < 60) {
             var x = stone.xC_future
             var y = stone.yC_future
-            var d = Tools.dsquare(piste.x, piste.y, x, y)
-            if (x < piste.x + piste.x_target) {
-                if (y < piste.y + piste.y_target - 20) {
+            var d = Tools.dsquare(sheet.x, sheet.y, x, y)
+            if (x < sheet.x + sheet.x_target) {
+                if (y < sheet.y + sheet.y_target - 20) {
                     sweep_up()
                 }
-                else if (y > piste.y + piste.y_target + 20) {
+                else if (y > sheet.y + sheet.y_target + 20) {
                     sweep_down()
                 }
                 else {
