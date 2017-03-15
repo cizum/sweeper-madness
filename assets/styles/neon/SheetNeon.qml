@@ -93,17 +93,34 @@ Item {
         radius: width / 2
         border.width: 45
         color: "transparent"
-        border.color: "#0000ff"
+        border.color: "transparent"
         visible: false
+        Rectangle {
+            anchors.centerIn: parent
+            height: root.d_target -  2 * parent.border.width
+            width: root.d_target - 2 * parent.border.width
+            radius: width / 2
+            border.width: 1
+            color: "transparent"
+            border.color: "#0040ff"
+        }
+        Rectangle {
+            anchors.centerIn: parent
+            height: root.d_target
+            width: root.d_target
+            radius: width / 2
+            border.width: 1
+            color: "transparent"
+            border.color: "#0040ff"
+        }
     }
 
     Glow {
         anchors.fill: target
         source: target
-        color: "#0000ff"
+        color: "#0040ff"
         samples: 17
         spread: 0.3
-        opacity: 0.2
     }
 
     Rectangle {
@@ -114,8 +131,26 @@ Item {
         radius: width/2
         border.width: 25
         color: "transparent"
-        border.color: "#ff0000"
+        border.color: "transparent"
         visible: false
+        Rectangle {
+            anchors.centerIn: parent
+            height: core_target.width -  2 * parent.border.width
+            width: core_target.height - 2 * parent.border.width
+            radius: width / 2
+            border.width: 1
+            color: "transparent"
+            border.color: "#ff0000"
+        }
+        Rectangle {
+            anchors.centerIn: parent
+            height: core_target.width
+            width: core_target.height
+            radius: width / 2
+            border.width: 1
+            color: "transparent"
+            border.color: "#ff0000"
+        }
     }
 
     Glow {
@@ -124,7 +159,6 @@ Item {
         color: "#ff0000"
         samples: 17
         spread: 0.3
-        opacity: 0.2
     }
 
     Rectangle {
