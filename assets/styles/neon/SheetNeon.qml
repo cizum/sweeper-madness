@@ -11,21 +11,22 @@ Item {
     property int x_target: root.width - 20 - root.r_target
     property int y_target: root.height / 2
     property int r_target: root.d_target / 2
-    property string lines_color: "#151515"
+    property string lines_color: "#ffffff"
+    property string inside_lines_color: "#303030"
 
     Rectangle {
         id: middle_line
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
         height: 3
-        color: root.lines_color
+        color: root.inside_lines_color
         visible: false
     }
 
     Glow {
         anchors.fill: middle_line
         source: middle_line
-        color: root.lines_color
+        color: root.inside_lines_color
         samples: 17
         spread: 0.1
     }
@@ -54,14 +55,14 @@ Item {
         x: root.end_sweep_line
         width: 1
         height: parent.height
-        color: root.lines_color
+        color: root.inside_lines_color
         visible: false
     }
 
     Glow {
         anchors.fill: end_sweep_line_rec
         source: end_sweep_line_rec
-        color: root.lines_color
+        color: root.inside_lines_color
         samples: 17
         spread: 0.1
     }
@@ -72,14 +73,14 @@ Item {
         x: target.x + target.width / 2 - 1
         width: 3
         height: parent.height
-        color: root.lines_color
+        color: root.inside_lines_color
         visible: false
     }
 
     Glow {
         anchors.fill: middle_target
         source: middle_target
-        color: root.lines_color
+        color: root.inside_lines_color
         samples: 17
         spread: 0.1
     }
