@@ -15,7 +15,10 @@ $ sudo apt install build-essential qtbase5-dev qt5-default
 $ sudo apt install qtdeclarative5-dev
 $ sudo apt install qml-module-qtquick2
 $ sudo apt install qml-module-qtquick-window2
-$ sudo apt install qml-module-qtgraphicaleffects 
+$ sudo apt install qml-module-qtgraphicaleffects
+$ sudo apt install qml-module-qtmultimedia
+$ sudo apt install libqt5multimedia5-plugins
+$ sudo apt install libcanberra-gtk-module 
 ```
 
 ## Building
