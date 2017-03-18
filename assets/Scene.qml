@@ -82,12 +82,27 @@ Item {
     }
     property alias stone: stones.current
 
-    Launcher{
-        id: launcher
-        xC: root.xcl()
-        yC: root.ycl()
-        style: root.style
-        team: root.current_team
+    Item {
+        id: launchers
+        anchors.fill: parent
+        Repeater {
+            model: 2
+            Launcher{
+                id: launcher
+                style: root.style
+                team: index
+                xC: root.width / 2
+                yC: 0
+                xStart: sheet.x
+                yStart: sheet.y + sheet.height / 2 - stone.height / 3
+                xEnd: sheet.x + sheet.start_line + 20
+                yEnd: sheet.y + sheet.height / 2 - stone.height / 3
+                xStone: stone.xC - 3 * stone.width / 4
+                yStone: stone.yC - stone.height / 3
+                xOff: 500
+                yOff: 200
+            }
+        }
     }
 
     Sweeper {
@@ -132,6 +147,9 @@ Item {
     }
 
     function update() {
+
+        launchers.children[0].update(root.phase, root.current_team)
+        launchers.children[1].update(root.phase, root.current_team)
         if (madi.playing)
             madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, sheet)
         switch(root.phase) {
@@ -166,7 +184,6 @@ Item {
         case 4:
             sweeper_1.move_smooth()
             sweeper_2.move_smooth()
-            launcher.move_smooth()
             stone.speed = inputs.speed
             stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
             stone.f_curl = 0.05
@@ -368,24 +385,6 @@ Item {
         var xt = sheet.x + sheet.x_target
         var yt = sheet.y + sheet.y_target
         return Tools.dsquare(xc, yc, xt, yt)
-    }
-
-    function xcl(){
-        if (root.phase < 1)
-            return sheet.x
-        else if (root.phase > 3)
-            return sheet.x + sheet.start_line + 20
-        else
-            return stone.xC - 3 * stone.width / 4
-    }
-
-    function ycl(){
-        if (root.phase < 1)
-            return sheet.y + sheet.height / 2 - stone.height / 3
-        else if (root.phase > 3)
-            return sheet.y + sheet.height / 2 - stone.height / 3
-        else
-            return stone.yC - stone.height / 3
     }
 
     function xcsw1(){
