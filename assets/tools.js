@@ -20,6 +20,10 @@ function slope(x0, y0, x1, y1) {
     return a / Math.PI * 180
 }
 
+function sign(a) {
+    return a / Math.abs(a)
+}
+
 function compare(a, b) {
     if (a[1] === b[1]) {
         return 0
@@ -31,6 +35,14 @@ function compare(a, b) {
 
 function dsquare(x0, y0, x1, y1) {
     return (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)
+}
+
+function getClose(a0, a1, speed) {
+    var d = Math.abs(a1 - a0)
+    if (d < speed )
+        return a1
+    else
+        return a0 + speed
 }
 
 function solve_collision(stone_a, stone_b) {

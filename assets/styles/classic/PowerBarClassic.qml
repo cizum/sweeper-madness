@@ -5,7 +5,8 @@ Rectangle {
     id: root
     width: 300
     height: 15
-    color: "#bbbbcc"
+    color: "#606070"
+    border.color: "#303040"
     property double power: 0
 
     Item {

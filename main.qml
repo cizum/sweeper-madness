@@ -1,6 +1,5 @@
 import QtQuick 2.2
 import QtQuick.Window 2.1
-import QtGraphicalEffects 1.0
 import "assets"
 
 Window {
@@ -8,8 +7,14 @@ Window {
     visible: true
     width: 1280
     height: 720
-    color: "#ddddee"
+    color: "#000000"
     property int game_state: 0
+
+    Background {
+        id: background
+        anchors.fill: parent
+        style: scene.style
+    }
 
     FontLoader {source: "fonts/paintypaint.ttf"}
 

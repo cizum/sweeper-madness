@@ -3,13 +3,14 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: root
-    width: 22
-    height:22
+    width: root.lying ? 22 : 31
+    height: root.lying ? 22 : 15
     property int team: 0
     property var colors: ["#ffbb00", "#00bbff", "#ffffff"]
     property string color: root.colors[team]
     property string borderColor: "#101010"
-    property int headOffset: - 8
+    property int headOffset: root.lying ? - 8 : - root.height / 4
+    property bool lying: false
 
     Rectangle {
         id: broom
@@ -134,6 +135,7 @@ Item {
         samples: 17
         antialiasing: true
         spread: 0.1
+        visible: root.lying
     }
 
     Rectangle {
@@ -157,6 +159,7 @@ Item {
         samples: 17
         antialiasing: true
         spread: 0.1
+        visible: root.lying
     }
 
     Rectangle{

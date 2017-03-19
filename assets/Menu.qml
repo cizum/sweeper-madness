@@ -13,12 +13,6 @@ Item {
         NumberAnimation {duration: 500}
     }
 
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: "#ddddee"
-    }
-
     Title {
         id: title
         text: "Sweeper Madness"

@@ -22,13 +22,7 @@ MouseArea {
 
         Behavior on color {
             ColorAnimation {
-                duration: 150
-            }
-        }
-
-        Behavior on font.pixelSize {
-            NumberAnimation {
-                duration: 150
+                duration: 100
             }
         }
     }
@@ -42,7 +36,6 @@ MouseArea {
             PropertyChanges {
                 target: label
                 color: root.textcolorDown
-                font.pixelSize: root.textsize + 10
                 style: Text.Outline
                 styleColor: "#aaaadd"
             }
@@ -52,7 +45,6 @@ MouseArea {
             PropertyChanges {
                 target: label
                 color: root.textcolorHover
-                font.pixelSize: root.textsize + 10
                 style: Text.Outline
                 styleColor: "#aaaadd"
             }

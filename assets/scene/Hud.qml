@@ -17,25 +17,15 @@ Item {
     PowerBar {
         id: power_bar
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 650
+        y: 640
         style: root.style
     }
 
     DirectionBar {
         id: direction_bar
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 525
+        y: 515
         style: root.style
-    }
-
-    Text{
-        id: end
-        text: "End " + (root.current_end + 1) + "/" + root.ends
-        color: root.style == 1 ? "#303030" : "#bbbbcc"
-        font.pixelSize: 40
-        font.family: "PaintyPaint"
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: - 180
     }
 
     Winner {
@@ -46,14 +36,14 @@ Item {
 
     Score {
         id: score_display
-        anchors.verticalCenter: parent.verticalCenter
-        x: 1050
-        color: root.style == 1 ? "#eeeeee" : "#101010"
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: 80
+        style: root.style
     }
 
     Indications {
         id: indications
-        y:50
+        y: 675
         anchors.horizontalCenter: parent.horizontalCenter
         color: root.style == 1 ? "#eeeeee" : "#101010"
     }

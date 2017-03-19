@@ -5,7 +5,7 @@ Item {
     width: 100
     height: 100
     property double direction: 0
-    property string color: "#bbbbcc"
+    property string color: "#606070"
 
     Rectangle {
         id: needle
@@ -15,6 +15,7 @@ Item {
         color: root.color
         antialiasing: true
         transform: Rotation {
+            origin.x: needle.width / 2
             origin.y: needle.height
             angle: root.direction
         }

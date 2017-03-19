@@ -38,7 +38,7 @@ DISTFILES += \
     assets/styles/classic/StoneClassic.qml \
     assets/styles/classic/BackgroundClassic.qml \
     assets/styles/neon/BackgroundNeon.qml \
-    assets/scene/Background.qml \
+    assets/Background.qml \
     assets/scene/Sheet.qml \
     assets/styles/classic/SheetClassic.qml \
     assets/styles/neon/SheetNeon.qml \

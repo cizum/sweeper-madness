@@ -2,13 +2,14 @@ import QtQuick 2.0
 
 Item {
     id: root
-    width: 22
-    height:22
+    width: root.lying ? 22 : 31
+    height: root.lying ? 22 : 15
     property int team: 0
     property var colors: ["#ffff55", "#cc2020"]
     property string color: root.colors[team]
     property string borderColor: "#101010"
-    property int headOffset: - 8
+    property int headOffset: root.lying ? - 8 : - root.height / 4
+    property bool lying: false
 
     Rectangle {
         id: left_arm
@@ -18,7 +19,7 @@ Item {
         z: -1
         x: 0
         anchors.bottom: parent.verticalCenter
-        anchors.bottomMargin: parent.height / 4
+        anchors.bottomMargin: parent.height / 5
         color: root.color
         border.color: root.borderColor
         antialiasing: true
@@ -66,7 +67,7 @@ Item {
         z: -1
         x: parent.width - width
         anchors.bottom: parent.verticalCenter
-        anchors.bottomMargin: parent.height / 3
+        anchors.bottomMargin: parent.height / 5
         color: root.color
         border.color: root.borderColor
         antialiasing: true
@@ -88,6 +89,7 @@ Item {
         color: root.color
         border.color: "#101010"
         antialiasing: true
+        visible: root.lying
     }
 
     Rectangle {
@@ -101,6 +103,7 @@ Item {
         color: "#dddddd"
         border.color: "#101010"
         antialiasing: true
+        visible: root.lying
     }
 
     Rectangle{
@@ -148,7 +151,7 @@ Item {
         else if (r < 0.5)
             return "#d0d020"
         else if (r < 0.7)
-            return "#a68c24"
+            return "#d6cc24"
         else if (r < 0.85)
             return "#bd5f10"
         else

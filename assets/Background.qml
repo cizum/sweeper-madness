@@ -1,6 +1,6 @@
 import QtQuick 2.2
-import "../styles/classic"
-import "../styles/neon"
+import "styles/classic"
+import "styles/neon"
 
 Item {
     id: root
@@ -12,6 +12,7 @@ Item {
         id: background_classic
         visible: root.style == 0
     }
+
     BackgroundNeon{
         id: background_neon
         visible: root.style == 1

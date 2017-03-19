@@ -37,12 +37,6 @@ Item {
         onReleaseDown: root.onDownReleased()
     }
 
-    Background {
-        id: background
-        anchors.fill: parent
-        style: root.style
-    }
-
     Sheet {
         id: sheet
         anchors.centerIn: parent
@@ -88,46 +82,42 @@ Item {
         Repeater {
             model: 2
             Launcher{
-                id: launcher
                 style: root.style
                 team: index
-                xC: root.width / 2
-                yC: 0
+                xC: team == root.current_team ? xStart : xOff
+                yC: team == root.current_team ? yStart : yOff
                 xStart: sheet.x
                 yStart: sheet.y + sheet.height / 2 - stone.height / 3
                 xEnd: sheet.x + sheet.start_line + 20
                 yEnd: sheet.y + sheet.height / 2 - stone.height / 3
                 xStone: stone.xC - 3 * stone.width / 4
                 yStone: stone.yC - stone.height / 3
-                xOff: 500
-                yOff: 200
+                xOff: 400
+                yOff: team == 0 ? 550 : 190
             }
         }
     }
 
-    Sweeper {
-        id: sweeper_1
-        xC: root.xcsw1()
-        yC: root.ycsw1()
-        style: root.style
-        team: root.current_team
-        transform: Rotation {
-            origin.x: sweeper_1.width / 2
-            origin.y: sweeper_1.height / 2
-            angle: root.phase > 3 ? stone.direction : 0
-        }
-    }
-
-    Sweeper {
-        id: sweeper_2
-        xC: root.xcsw2()
-        yC: root.ycsw2()
-        style: root.style
-        team: root.current_team
-        transform: Rotation {
-            origin.x: sweeper_2.width / 2
-            origin.y: sweeper_2.height / 2
-            angle: (root.phase > 3 ? stone.direction : 0) + 180
+    Item {
+        id: sweepers
+        anchors.fill: parent
+        Repeater {
+            model: 4
+            Sweeper {
+                style: root.style
+                team: index < 2 ? 0 : 1
+                side: index % 2
+                xC: team == root.current_team ? xStart : xOff
+                yC: team == root.current_team ? yStart : yOff
+                xStart: sheet.x + 200
+                yStart: side == 0 ? sheet.y + sheet.height - 20 : sheet.y + 20
+                xEnd: sheet.x + 1100
+                yEnd: side == 0 ? sheet.y + sheet.height + 40 : sheet.y - 40
+                xStone: side == 0 ? stone.xC + Tools.x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : stone.xC + Tools.x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+                yStone: side == 0 ? stone.yC + Tools.y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : stone.yC + Tools.y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
+                xOff: 450
+                yOff: side == 0 ? 550 : 190
+            }
         }
     }
 
@@ -147,9 +137,10 @@ Item {
     }
 
     function update() {
-
         launchers.children[0].update(root.phase, root.current_team)
         launchers.children[1].update(root.phase, root.current_team)
+        for (var s = 0; s < 4; s++)
+            sweepers.children[s].update(root.phase, root.current_team, stone)
         if (madi.playing)
             madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, sheet)
         switch(root.phase) {
@@ -182,15 +173,9 @@ Item {
             stone.direction = inputs.direction
             break
         case 4:
-            sweeper_1.move_smooth()
-            sweeper_2.move_smooth()
             stone.speed = inputs.speed
             stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
             stone.f_curl = 0.05
-            break
-        case 5:
-            sweeper_1.move_smooth()
-            sweeper_2.move_smooth()
             break
         }
     }
@@ -215,7 +200,7 @@ Item {
             inputs.position_sense = -1
             break
         case 4:
-            sweeper_2.sweep()
+            sweepers.children[root.current_team * 2 + 1].sweep()
             stone.direction = stone.direction + 0.12
             stone.speed = stone.speed + 0.005
             break
@@ -228,7 +213,7 @@ Item {
             inputs.position_sense = 1
             break
         case 4:
-            sweeper_1.sweep()
+            sweepers.children[root.current_team * 2].sweep()
             stone.direction = stone.direction - 0.12
             stone.speed = stone.speed + 0.005
             break
@@ -385,47 +370,5 @@ Item {
         var xt = sheet.x + sheet.x_target
         var yt = sheet.y + sheet.y_target
         return Tools.dsquare(xc, yc, xt, yt)
-    }
-
-    function xcsw1(){
-        if (root.phase < 4) {
-            return sheet.x + 200
-        }
-        else if (root.phase == 4) {
-            return stone.xC + Tools.x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
-        }
-        else {
-            return sheet.x + 1100
-        }
-    }
-
-    function ycsw1(){
-        if (root.phase < 4) {
-            return sheet.y + sheet.height - 20
-        }
-        else if (root.phase == 4) {
-            return stone.yC + Tools.y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad)
-        }
-        else {
-            return sheet.y + sheet.height + 40
-        }
-    }
-
-    function xcsw2(){
-        if (root.phase < 4)
-            return sheet.x + 200
-        else if (root.phase == 4)
-            return stone.xC + Tools.x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
-        else
-            return sheet.x + 1100
-    }
-
-    function ycsw2(){
-        if (root.phase < 4)
-            return sheet.y + 20
-        else if (root.phase == 4)
-            return stone.yC + Tools.y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
-        else
-            return sheet.y - 40
     }
 }

@@ -1,11 +1,12 @@
 import QtQuick 2.2
 import "../styles/classic"
 import "../styles/neon"
+import "../tools.js" as Tools
 
 Item {
     id: root
-    width: 22
-    height:22
+    width: root.lying ? 22 : 31
+    height: root.lying ? 22 : 15
     x: xC - width / 2
     y: yC - height /2
     z: 1
@@ -21,10 +22,25 @@ Item {
     property double yStone: 0
     property double xOff: 0
     property double yOff: 0
-    property int speed: 3
-    property double direction: 90
+    property double angle: 90
+    property double oldxC: 0
+    property double oldyC: 0
+    property bool lying: false
 
-    Behavior on direction {
+    Behavior on angle {
+        RotationAnimation {
+            duration: 150
+            direction: RotationAnimation.Shortest
+        }
+    }
+
+    Behavior on width {
+        NumberAnimation {
+            duration: 100
+        }
+    }
+
+    Behavior on height {
         NumberAnimation {
             duration: 100
         }
@@ -33,13 +49,14 @@ Item {
     transform: Rotation{
         origin.x: root.width / 2
         origin.y: root.height / 2
-        angle: root.direction
+        angle: root.angle
     }
 
     LauncherClassic {
         id: launcher_classic
         anchors.fill: parent
         team: root.team
+        lying: root.lying
         visible: root.style == 0
     }
 
@@ -47,57 +64,86 @@ Item {
         id: launcher_neon
         anchors.fill: parent
         team: root.team
+        lying: root.lying
         visible: root.style == 1
     }
 
     function update(phase, current_team) {
         root.nextPosition(phase, current_team)
+        root.nextAngle()
+    }
+
+    function nextAngle() {
+        if (root.closeTo(root.xStart, root.yStart)) {
+            root.angle = 90
+            root.lying = true
+        }
+        else if (root.closeTo(root.xStone, root.yStone)) {
+            root.angle = 90
+            root.lying = true
+        }
+        else if (root.closeTo(root.xEnd, root.yEnd)) {
+            root.angle = 90
+            root.lying = false
+        }
+        else if (root.closeTo(root.xOff, root.yOff)) {
+            root.angle = root.team == 0 ? 0 : 180
+            root.lying = false
+        }
+        else {
+            var tmpangle = root.slope(root.oldxC, root.oldyC) * 180 / Math.PI - 90
+            if (tmpangle > 180)
+                root.angle = tmpangle - 360
+            else if (tmpangle < - 180)
+                root.angle = tmpangle + 360
+            else
+                root.angle = tmpangle
+        }
+        root.oldxC = root.xC
+        root.oldyC = root.yC
     }
 
     function nextPosition(phase, current_team) {
         if (root.team === current_team) {
             if (phase < 1)
-                root.moveTo(root.xStart, root.yStart, 4)
+                root.moveTo(root.xStart, root.yStart, 3)
             else if (phase > 3)
-                root.moveTo(root.xEnd, root.yEnd, 2)
+                root.moveTo(root.xEnd, root.yEnd, 1)
             else
-                root.moveTo(root.xStone, root.yStone, 3)
+                root.moveTo(root.xStone, root.yStone, 2)
         }
-        else
-            root.moveTo(root.xOff, root.yOff, 4)
+        else {
+            if (phase < 4)
+                root.moveTo(root.xOff, root.yOff, 3)
+            else
+                root.moveTo(root.xStart, root.yStart, 2)
+        }
     }
 
     function moveTo(x, y, speed) {
         var sgn = 1
         if (root.xC !== x && root.yC !== y) {
-            var a = slope(x, y)
+            var a = root.slope(x, y)
             var sx = speed * Math.cos(a)
             var sy = speed * Math.sin(a)
-            root.xC = root.getClose(root.xC, x, sx)
-            root.yC = root.getClose(root.yC, y, sy)
+            root.xC = Tools.getClose(root.xC, x, sx)
+            root.yC = Tools.getClose(root.yC, y, sy)
         }
         else if (root.xC !== x) {
-            sgn = root.sign(x - root.xC)
-            root.xC = root.getClose(root.xC, x, sgn * speed)
+            sgn = Tools.sign(x - root.xC)
+            root.xC = Tools.getClose(root.xC, x, sgn * speed)
         }
         else if (root.yC !== y) {
-            sgn = root.sign(y - root.yC)
-            root.yC = root.getClose(root.yC, y, sgn * speed)
+            sgn = Tools.sign(y - root.yC)
+            root.yC = Tools.getClose(root.yC, y, sgn * speed)
         }
     }
 
-    function getClose(a0, a1, speed) {
-        var d = Math.abs(a1 - a0)
-        if (d < speed )
-            return a1
-        else
-            return a0 + speed
-    }
-    function sign(a) {
-        return a / Math.abs(a)
+    function slope(x, y) {
+        return Math.atan2(y - root.yC, x - root.xC)
     }
 
-    function slope(x,y) {
-        return Math.atan2(y - root.yC, x - root.xC)
+    function closeTo(x, y) {
+        return root.xC > x - 3 && root.xC < x + 3 && root.yC > y - 3 && root.yC < y + 3
     }
 }
