@@ -10,13 +10,14 @@ Item {
     signal mark(int x, int y, int a)
     property int mark_period: 500
     property int mark_time: 0
+    property int starter: 0
 
     Repeater {
         model: root.count
 
         Stone {
             id: stone
-            team: index % 2 == 0 ? 1 : 0
+            team: index % 2 == 0 ? root.starter : 1 - root.starter
             style: root.style
             onXCChanged: {
                 var r = Math.random()

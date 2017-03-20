@@ -10,11 +10,12 @@ Item {
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int players: 2
     property int ends: 1
+    property int starter: Math.floor(Math.random() * 2)
     property int current_end: 0
     property int stones_count: 2
     property int current_stone: 0
     property var colors: ["#ffff55", "#cc2020", "#55ff55", "#5555ff"]
-    property int current_team: (root.current_stone + 1) % 2
+    property int current_team: 0
     property int gameState: 0
     property bool ready: false
     property int style: 0
@@ -73,6 +74,7 @@ Item {
         count: root.stones_count
         onMark: marks.add(x, y, a)
         style: root.style
+        starter: root.starter
     }
     property alias stone: stones.current
 
@@ -279,6 +281,11 @@ Item {
             root.score()
             if (root.current_stone >= stones.count - 1) {
                 hud.total_score = [hud.total_score[0] + hud.score[0], hud.total_score[1] + hud.score[1]]
+                var v = hud.score[1] - hud.score[0]
+                if (v > 0)
+                    root.starter = 1
+                else if (v < 0)
+                    root.starter = 0
                 hud.score = [0, 0]
                 if (root.current_end == root.ends - 1) {
                     root.phase = 6
@@ -291,6 +298,7 @@ Item {
             }
             else{
                 root.current_stone = (root.current_stone + 1) % stones.count
+                root.current_team = (root.current_team + 1) % 2
                 root.ready = false
                 root.phase = 0
             }
@@ -301,8 +309,10 @@ Item {
         root.phase = 0
         inputs.initialize()
         stones.current_n = n
-        if ( n === 0)
+        if ( n === 0) {
             stones.initialize(sheet)
+            root.current_team = root.starter
+        }
         stone.xC = sheet.x + 20
         stone.yC = sheet.y + sheet.height / 2
         madi.ready = false
@@ -312,6 +322,7 @@ Item {
     function new_end(){
         root.current_end = root.current_end + 1
         root.current_stone = 0
+        root.current_team = root.starter
         root.ready = false
         root.phase = 0
     }
@@ -357,7 +368,7 @@ Item {
         for (var i = 0; i < stones.count; i++) {
             for (var j = i + 1; j < stones.count; j++) {
                 var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
-                if (d < (2 * stone.radius) * (2 * stone.radius)){
+                if (d < stone.width * stone.width){
                     if (stones.children[i].speed > 0 || stones.children[j].speed > 0)
                         soundManager.collide()
                     Tools.solve_collision(stones.children[j], stones.children[i])
