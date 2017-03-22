@@ -7,10 +7,12 @@ Item {
     width: 1280
     height: 720
     visible: root.opacity > 0
+    property bool started: false
     signal start(int ends, int stones, int players)
+    signal resume()
 
     Behavior on opacity {
-        NumberAnimation {duration: 500}
+        NumberAnimation {duration: 300}
     }
 
     Title {
@@ -61,6 +63,24 @@ Item {
         anchors.centerIn: parent
         anchors.verticalCenterOffset: 250
         onClicked: root.start(end_choicelist.current, stones_choicelist.current, players_choicelist.current)
+        visible: root.started == false
+    }
+
+    Row {
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: 250
+        spacing: 20
+        Button {
+            id: newstart_button
+            text: "NEW"
+            onClicked: root.start(end_choicelist.current, stones_choicelist.current, players_choicelist.current)
+        }
+        Button {
+            id: resume_button
+            text: "RESUME"
+            onClicked: root.resume()
+        }
+        visible: root.started == true
     }
 }
 

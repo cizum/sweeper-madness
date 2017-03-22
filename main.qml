@@ -44,8 +44,8 @@ Window {
         gameState: root.game_state
         scale: Math.min(root.width / width, root.height / height)
         onMenu: {
+            menu.started = ! scene.finished
             root.game_state = 0
-            scene.phase = 0
         }
     }
 
@@ -59,6 +59,9 @@ Window {
             scene.stones_count = stones
             scene.players = players
             scene.restart()
+            root.game_state = 1
+        }
+        onResume: {
             root.game_state = 1
         }
     }

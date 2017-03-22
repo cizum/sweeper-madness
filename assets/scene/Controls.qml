@@ -17,7 +17,7 @@ Item {
     signal menu()
     signal mute()
     signal changeStyle()
-    property bool mobile: version == "mobile"
+    property bool mobile: version === "mobile"
     property int phase: 0
 
     Keys.onPressed: {
@@ -51,8 +51,7 @@ Item {
                 root.restart()
             }
             else if (event.key === Qt.Key_Escape) {
-                if (root.phase == 6)
-                    root.menu()
+                root.menu()
             }
             else if (root.playing) {
                 if (event.key === Qt.Key_Up) {
@@ -107,9 +106,9 @@ Item {
         x: 20
         y: 15
         text: "Menu"
-        textsize: 30
+        textsize: 25
         onPressed: root.menu()
-        visible: root.phase == 6
+        visible: root.mobile
     }
 }
 

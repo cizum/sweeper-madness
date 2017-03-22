@@ -7,6 +7,7 @@ Item {
     id: root
     width: 1280
     height: 720
+    visible: root.opacity > 0
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int players: 2
     property int ends: 1
@@ -20,6 +21,18 @@ Item {
     property bool ready: false
     property int style: 0
     signal menu()
+    property bool finished: true
+
+    Behavior on opacity {
+        SequentialAnimation {
+            PauseAnimation {
+                duration: 300
+            }
+            NumberAnimation {
+                duration: 500
+            }
+        }
+    }
 
     Inputs {
         id: inputs
@@ -88,7 +101,7 @@ Item {
     Stones {
         id: stones
         count: root.stones_count
-        onMark: marks.add(x, y, a)
+        onMark: if (root.ready) marks.add(x, y, a)
         style: root.style
         starter: root.starter
     }
@@ -294,6 +307,7 @@ Item {
                     root.phase = 6
                     stones.current_n = 0
                     hud.show_winner()
+                    root.finished = true
                 }
                 else {
                     root.new_end()
@@ -331,6 +345,7 @@ Item {
     }
 
     function restart(){
+        root.finished = false
         marks.clear()
         hud.initialize()
         hud.score = [0, 0]
