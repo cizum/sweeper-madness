@@ -1,8 +1,11 @@
 import QtQuick 2.2
+import QtQuick.Window 2.2
 
 Item {
     id: root
-    anchors.fill: parent
+    anchors.centerIn: parent
+    width: Screen.width
+    height: Screen.height
     property int style: 0
     property int team: 0
     property var names: root.style == 0 ? ["Yellow", "Red"] : ["Gold", "Turquoise"]

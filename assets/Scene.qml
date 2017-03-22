@@ -55,6 +55,22 @@ Item {
         style: root.style
     }
 
+    Controls {
+        id: controls
+        playing: ! madi.playing
+        onRestart: root.restart()
+        onMute: soundManager.mute = ! soundManager.mute
+        onDebug: hud.debug = ! hud.debug
+        onMenu: root.menu()
+        onPressSpace: root.onSpacePressed()
+        onPressUp: root.onUpPressed()
+        onPressDown: root.onDownPressed()
+        onReleaseUp: root.onUpReleased()
+        onReleaseDown: root.onDownReleased()
+        onChangeStyle: root.style = (root.style + 1) % 2
+        phase: root.phase
+    }
+
     SoundManager{
         id: soundManager
         gameState: root.gameState
@@ -121,21 +137,6 @@ Item {
                 yOff: side == 0 ? 550 : 190
             }
         }
-    }
-
-    Controls {
-        id: controls
-        playing: ! madi.playing
-        onRestart: root.restart()
-        onMute: soundManager.mute = ! soundManager.mute
-        onDebug: hud.debug = ! hud.debug
-        onMenu: if (root.phase == 6) root.menu()
-        onPressSpace: root.onSpacePressed()
-        onPressUp: root.onUpPressed()
-        onPressDown: root.onDownPressed()
-        onReleaseUp: root.onUpReleased()
-        onReleaseDown: root.onDownReleased()
-        onChangeStyle: root.style = (root.style + 1) % 2
     }
 
     function update() {
@@ -286,6 +287,8 @@ Item {
                     root.starter = 1
                 else if (v < 0)
                     root.starter = 0
+                else
+                    root.current_end --
                 hud.score = [0, 0]
                 if (root.current_end == root.ends - 1) {
                     root.phase = 6
@@ -330,6 +333,8 @@ Item {
     function restart(){
         marks.clear()
         hud.initialize()
+        hud.score = [0, 0]
+        hud.total_score = [0, 0]
         root.current_end = 0
         root.current_stone = 0
         root.ready = false

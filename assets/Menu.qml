@@ -41,7 +41,7 @@ Item {
             ChoiceList {
                 id: end_choicelist
                 name: index === 0 ? "end" : "ends"
-                index: 2
+                index: 3
                 model: [1, 2, 3, 4, 5, 6, 7, 8]
             }
         }

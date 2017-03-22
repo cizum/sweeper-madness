@@ -41,6 +41,7 @@ Window {
         anchors.centerIn: parent
         opacity: gameState === 1 ? 1 : 0
         gameState: root.game_state
+        scale: Math.min(root.width / width, root.height / height)
         onMenu: {
             root.game_state = 0
             scene.phase = 0
@@ -49,8 +50,9 @@ Window {
 
     Menu {
         id: menu
-        anchors.fill: parent
+        anchors.centerIn: parent
         opacity: root.game_state == 0 ? 1 : 0
+        scale: Math.min(root.width / width, root.height / height)
         onStart: {
             scene.ends = ends
             scene.stones_count = stones
