@@ -9,6 +9,7 @@ Window {
     height: 720
     color: "#000000"
     property int game_state: 0
+    visibility: version === "mobile" ? "FullScreen" : "Windowed"
 
     Background {
         id: background
