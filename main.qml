@@ -21,7 +21,7 @@ Window {
 
     Timer {
         id: game_timer
-        interval: 30
+        interval: 25
         running: true
         repeat: true
         onTriggered: {

@@ -191,7 +191,6 @@ Item {
         case 4:
             stone.speed = inputs.speed
             stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
-            stone.f_curl = 0.05
             break
         }
     }

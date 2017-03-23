@@ -17,7 +17,8 @@ Item {
     property double direction: 0
     property double direction_rad: root.direction * Math.PI / 180
     property double angle: 0
-    property double f_curl: 0.05
+    property double f_friction: 0.005
+    property double f_curl: 0.02
     property int f_curl_dir: 1
     property double xC_future: 0
     property double yC_future: 0
@@ -62,36 +63,35 @@ Item {
     function update() {
         move()
         curl()
-        friction(0.005)
+        friction(root.f_friction)
     }
 
-    function curl(){
-        if (root.speed > 0 && root.f_curl > 0){
-            root.direction = root.direction + root.f_curl_dir *  root.f_curl
-            root.angle = root.angle + root.f_curl_dir * root.f_curl * 100
-            var new_f_curl = root.f_curl - 0.0001
-            root.f_curl = new_f_curl > 0 ? new_f_curl : 0
+    function curl() {
+        if (root.speed > 0 && root.f_curl > 0) {
+            var fc = root.f_curl_dir *  root.f_curl  * root.speed
+            root.direction = root.direction + fc
+            root.angle = root.angle + fc * 100
         }
     }
 
-    function prevision(){
+    function prevision() {
         var s = root.speed
         var d = root.direction
         var x = root.xC
         var y = root.yC
-        var fc = root.f_curl
+        var ff = root.f_friction
+        var fc = root.f_curl_dir * root.f_curl * s
 
-        while(s > 0) {
-            var d_rad = d * Math.PI / 180
-            x = x + s * Math.cos(d_rad);
-            y = y + s * Math.sin(d_rad);
-            s = s - 0.005
-            d = d + root.f_curl_dir * fc
-            fc = fc - 0.0001
-            if (fc < 0) fc = 0
-        }
-        root.xC_future = x
-        root.yC_future = y
+        var d_rad = d * Math.PI / 180
+        var sx = s * Math.cos(d_rad)
+        var sy = s * Math.sin(d_rad)
+        var nx = x + 1 / 2 * sx * sx / ff
+        var ny = y + 1 / 2 * sy * sy / ff
+
+        root.xC_future = nx
+        root.yC_future = ny
+
+        return [nx, ny]
     }
 }
 
