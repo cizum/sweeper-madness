@@ -72,7 +72,7 @@ Item {
         text: "⇧"
         onPressed: root.pressUp()
         onReleased: root.releaseUp()
-        visible: root.mobile
+        visible: root.mobile && root.playing
     }
 
     GameButton {
@@ -84,7 +84,7 @@ Item {
         text: "⇩"
         onPressed: root.pressDown()
         onReleased: root.releaseDown()
-        visible: root.mobile
+        visible: root.mobile && root.playing
     }
 
     GameButton {
@@ -96,7 +96,7 @@ Item {
         anchors.bottomMargin: 50
         text: ""
         onPressed: root.pressSpace()
-        visible: root.mobile
+        visible: root.mobile && root.playing
     }
 
     GameButton {
