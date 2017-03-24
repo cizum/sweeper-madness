@@ -2,7 +2,9 @@ TEMPLATE = app
 
 QT += qml quick
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    src/imagepix.cpp \
+    src/imageprovider.cpp
 
 android {
     DEFINES += MOBILE
@@ -16,3 +18,7 @@ include(deployment.pri)
 
 RESOURCES += \
     res.qrc
+
+HEADERS += \
+    src/imagepix.h \
+    src/imageprovider.h
