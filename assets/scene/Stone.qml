@@ -22,12 +22,7 @@ Item {
     property int f_curl_dir: 1
     property double xC_future: 0
     property double yC_future: 0
-
-    transform: Rotation{
-        origin.x: root.width / 2 + 1
-        origin.y: root.height / 2 + 1
-        angle: root.angle
-    }
+    rotation: root.angle
 
     StoneClassic{
         anchors.fill: parent

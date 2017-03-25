@@ -12,8 +12,8 @@ Rectangle {
     property string main_color: colors[team]
 
     Rectangle {
-        width: 3 * parent.width / 4
-        height: 3 * parent.height / 4
+        width: 19
+        height: 19
         radius: width / 2 + 1
         anchors.centerIn: parent
         color: root.main_color
@@ -22,7 +22,7 @@ Rectangle {
 
     Rectangle {
         id: handle
-        width: 10
+        width: 9
         height: 5
         radius: width / 2 + 1
         anchors.centerIn: parent
