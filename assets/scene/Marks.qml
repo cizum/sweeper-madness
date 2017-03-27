@@ -9,12 +9,12 @@ Item {
         id: marks_image
         source: "image://provider/0"
         cache: false
-        visible: root.style == 0
+        visible: root.style == 0 && version !== "mobile"
     }
 
 
     function add(x, y, a) {
-        if (root.style == 0) {
+        if (root.style == 0 && version !== "mobile") {
             marks_image.source = ""
             var ar = a * Math.PI / 180
             var cosar = Math.cos(ar)
@@ -26,7 +26,7 @@ Item {
             }
             marks_image.source = "image://provider/0"
         }
-        else {
+        else if (root.style == 1) {
             var component = Qt.createComponent(root.style_folder + "neon/MarkNeon.qml");
             component.createObject(root, {"x": x, "y": y, "rotation": a});
         }
