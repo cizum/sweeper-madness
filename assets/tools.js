@@ -59,4 +59,6 @@ function solve_collision(stone_a, stone_b) {
     stone_b.speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
     stone_a.direction = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
     stone_b.direction = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
+    stone_a.xC = stone_b.xC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.cos(a * Math.PI / 180);
+    stone_a.yC = stone_b.yC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.sin(a * Math.PI / 180);
 }
