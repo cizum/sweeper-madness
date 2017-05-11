@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import "../styles/classic"
 import "../styles/neon"
+import "../tools.js" as Tools
 
 Item {
     id: root
@@ -76,12 +77,11 @@ Item {
         var y = root.yC
         var ff = root.f_friction
         var fc = root.f_curl_dir * root.f_curl * s
-
         var d_rad = d * Math.PI / 180
         var sx = s * Math.cos(d_rad)
         var sy = s * Math.sin(d_rad)
         var nx = x + 1 / 2 * sx * sx / ff
-        var ny = y + 1 / 2 * sy * sy / ff
+        var ny = y - root.f_curl_dir * 1 / 2 * sy * sy / ff + 1000 * fc
 
         root.xC_future = nx
         root.yC_future = ny

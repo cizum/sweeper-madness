@@ -18,17 +18,21 @@ Item {
     property bool up: false
     property bool down_pressable: true
     property bool up_pressable: true
+    property var d_stones_target: []
+    property int strategy: 0 // 0 score 1 shoot
+    property double x_final: 0
+    property double y_final: 0
 
     onPressDown: root.down = true
     onReleaseDown: root.down = false
     onPressUp: root.up = true
     onReleaseUp: root.up = false
 
-    function think(phase, position, direction, power, stone, sheet) {
+    function think(phase, position, direction, power, stones, stone, sheet) {
         switch(phase) {
         case 1:
             if (!root.ready) {
-                choose(position, direction, power)
+                choose(position, direction, power, stones, sheet)
             }
             else {
                 if (Math.abs(position - root.position_target) < 1) {
@@ -53,12 +57,12 @@ Item {
             }
             break
         case 2:
-            if (near(direction, root.direction_target, 3)) {
+            if (near(direction, root.direction_target, 4)) {
                 root.pressSpace()
             }
             break
         case 3:
-            if (near(power, root.power_target, 5)) {
+            if (near(power, root.power_target, 6)) {
                 root.pressSpace()
             }
             break
@@ -68,10 +72,36 @@ Item {
         }
     }
 
-    function choose(position, direction, power) {
-        root.position_target = position + 100 - Math.random() * 200
-        root.direction_target = 15 - Math.random() * 30
-        root.power_target = 100 - Math.random() * 35
+    function choose(position, direction, power, stones, sheet) {
+        var shoot_target = -1
+        for (var s = 0; s < stones.count; s++) {
+            if (stones.children[s].team === 1) {
+                var dmax = sheet.r_target / 1.5
+                if (root.d_stones_target[s] < dmax * dmax) {
+                    if (shoot_target < 0 || root.d_stones_target[s] < root.d_stones_target[shoot_target])
+                        shoot_target = s
+                }
+            }
+        }
+        if (shoot_target >= 0) {
+            root.strategy = 1
+            root.x_final = stones.children[shoot_target].xC
+            root.y_final = stones.children[shoot_target].yC
+        }
+        else {
+            root.strategy = 0
+            root.x_final = sheet.x + sheet.x_target
+            root.y_final = sheet.y + sheet.y_target
+        }
+
+        root.position_target = position + 70 - Math.random() * 140
+        var a = Tools.slope(sheet.x, root.position_target, root.x_final, root.y_final)
+        if (a > 0)
+            root.direction_target = - a - 7 * Math.random()
+        else
+            root.direction_target = - a + 7 * Math.random()
+
+        root.power_target = root.strategy == 0 ? 95 - Math.random() * 25 : 100 - 4 * Math.random()
         root.ready = true
     }
 
@@ -85,14 +115,14 @@ Item {
 
     function analyze(stone, sheet) {
         if (stone.speed > 0 && stone.direction > -60 && stone.direction < 60) {
-            var x = stone.xC_future
-            var y = stone.yC_future
-            var d = Tools.dsquare(sheet.x, sheet.y, x, y)
-            if (x < sheet.x + sheet.x_target) {
-                if (y < sheet.y + sheet.y_target - 20) {
+            var xf = stone.xC_future
+            var yf = stone.yC_future
+
+            if (xf <  root.x_final || strategy == 1) {
+                if (yf <  root.y_final - 20) {
                     sweep_up()
                 }
-                else if (y > sheet.y + sheet.y_target + 20) {
+                else if (yf > root.y_final + 20) {
                     sweep_down()
                 }
                 else {

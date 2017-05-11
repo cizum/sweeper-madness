@@ -158,7 +158,7 @@ Item {
         for (var s = 0; s < 4; s++)
             sweepers.children[s].update(root.phase, root.current_team, stone)
         if (madi.playing)
-            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stone, sheet)
+            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stones, stone, sheet)
         switch(root.phase) {
         case 0:
             root.p_start_update()
@@ -328,6 +328,9 @@ Item {
         if ( n === 0) {
             stones.initialize(sheet)
             root.current_team = root.starter
+            for (var i = 0; i < stones.count; i++){
+                madi.d_stones_target[i] = 1000000
+            }
         }
         stone.xC = sheet.x + 20
         stone.yC = sheet.y + sheet.height / 2
@@ -340,6 +343,9 @@ Item {
         root.current_stone = 0
         root.current_team = root.starter
         root.ready = false
+        for (var i = 0; i < stones.count; i++){
+            madi.d_stones_target[i] = 1000000
+        }
         root.phase = 0
     }
 
@@ -362,6 +368,7 @@ Item {
         var k = 0
         for (var i = 0; i < stones.count; i++){
             var d = dsquare_target(stones.children[i].xC, stones.children[i].yC)
+            madi.d_stones_target[i] = d
             if (d < dmax * dmax){
                 array[k] = [i, d]
                 k ++
