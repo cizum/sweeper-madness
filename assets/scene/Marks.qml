@@ -21,7 +21,7 @@ Item {
             var sinar = Math.sin(ar)
             for (var i = - 4; i < 4; i++) {
                 for (var j = - 1; j < 1; j++) {
-                    imagePix.setPixel(Math.floor(x + i * cosar - j * sinar), Math.floor(y + i * sinar + j * cosar), 255, 255, 255, 90)
+                    imagePix.setPixel(Math.floor(x + i * cosar - j * sinar), Math.floor(y + i * sinar + j * cosar), 255, 255, 255, 30)
                 }
             }
             marks_image.source = "image://provider/0"
