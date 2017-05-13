@@ -48,6 +48,11 @@ Item {
         color: root.style == 1 ? "#eeeeee" : "#101010"
     }
 
+    FuturePath {
+        id: future_path
+        visible: root.debug && (root.phase == 4 || root.phase == 5)
+    }
+
     Stone{
         id: ghost
         team: 2
@@ -60,6 +65,16 @@ Item {
         }
         Behavior on yC {
             NumberAnimation { duration: 80 }
+        }
+    }
+
+    function update_future_path(stone) {
+        var end_t = stone.end_time()
+        for (var i = 0; i < future_path.count; i++) {
+            var t = (i+1) * end_t / (future_path.count + 1)
+            var r = stone.future_position(t)
+            future_path.children[i].xC = r[0]
+            future_path.children[i].yC = r[1]
         }
     }
 

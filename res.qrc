@@ -47,5 +47,6 @@
         <file>sounds/choc.ogg</file>
         <file>sounds/gamestart.ogg</file>
         <file>main.qml</file>
+        <file>assets/scene/hud/FuturePath.qml</file>
     </qresource>
 </RCC>

@@ -278,6 +278,7 @@ Item {
 
     function p_sweep_update() {
         stone.prevision()
+        hud.update_future_path(stone)
         hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
         collisions()
@@ -287,6 +288,7 @@ Item {
 
     function p_score_update() {
         stone.prevision()
+        hud.update_future_path(stone)
         hud.update_ghost(stone.xC_future, stone.yC_future)
         stones.update()
         collisions()

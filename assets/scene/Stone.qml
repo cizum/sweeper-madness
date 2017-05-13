@@ -64,29 +64,39 @@ Item {
 
     function curl() {
         if (root.speed > 0 && root.f_curl > 0) {
-            var fc = root.f_curl_dir *  root.f_curl  * root.speed
-            root.direction = root.direction + fc
-            root.angle = root.angle + fc * 100
+            var fcv = root.f_curl_dir * root.f_curl  * root.speed
+            root.direction = root.direction + fcv
+            root.angle = root.angle + fcv * 100
         }
     }
 
-    function prevision() {
+    function future_position(t) {
         var s = root.speed
         var d = root.direction
         var x = root.xC
         var y = root.yC
         var ff = root.f_friction
-        var fc = root.f_curl_dir * root.f_curl * s
-        var d_rad = d * Math.PI / 180
-        var sx = s * Math.cos(d_rad)
-        var sy = s * Math.sin(d_rad)
-        var nx = x + 1 / 2 * sx * sx / ff
-        var ny = y - root.f_curl_dir * 1 / 2 * sy * sy / ff + 1000 * fc
-
-        root.xC_future = nx
-        root.yC_future = ny
-
+        var cv = Math.PI / 180
+        var fcr = root.f_curl_dir * root.f_curl * cv
+        var d_rad = d * cv
+        var cosd = Math.cos(d_rad)
+        var sind = Math.sin(d_rad)
+        var nx = x + 1 / fcr * (- sind + sind * Math.cos(fcr * (- s * t + 1 / 2 * ff * t * t))
+                                       - cosd * Math.sin(fcr * (- s * t + 1 / 2 * ff * t * t)))
+        var ny = y + 1 / fcr * (cosd - sind * Math.sin(fcr * (- s * t + 1 / 2 * ff * t * t))
+                                     - cosd * Math.cos(fcr * (- s * t + 1 / 2 * ff * t * t)))
         return [nx, ny]
+    }
+
+    function end_time() {
+        return root.speed / root.f_friction
+    }
+
+    function prevision() {
+        var r = future_position(end_time())
+        root.xC_future = r[0]
+        root.yC_future = r[1]
+        return r
     }
 }
 
