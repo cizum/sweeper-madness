@@ -13,6 +13,7 @@ Item {
     property alias phase: indications.phase
     property alias current_end: score_display.current_end
     property alias ends: score_display.ends
+    property alias areas: areas
 
     PowerBar {
         id: power_bar
@@ -46,6 +47,11 @@ Item {
         y: 675
         anchors.horizontalCenter: parent.horizontalCenter
         color: root.style == 1 ? "#eeeeee" : "#101010"
+    }
+
+    Areas {
+        id: areas
+        visible: root.debug
     }
 
     FuturePath {

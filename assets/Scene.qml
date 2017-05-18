@@ -43,7 +43,11 @@ Item {
 
     Madi {
         id: madi
+        x_house: sheet.x + sheet.x_target
+        y_house: sheet.y + sheet.y_target
+        r_house: sheet.r_target
         playing: (root.players == 1 && root.current_team == 0)
+        has_last_throw: root.starter == 0
         onPressSpace: root.onSpacePressed()
         onPressUp: root.onUpPressed()
         onPressDown: root.onDownPressed()
@@ -64,6 +68,9 @@ Item {
         phase: root.phase
         current_end: root.current_end
         ends: root.ends
+        areas.xC: sheet.x + sheet.x_target
+        areas.yC: sheet.y + sheet.y_target
+        areas.r: sheet.r_target + stone.radius
         opacity: 0.8
         style: root.style
     }
@@ -158,7 +165,7 @@ Item {
         for (var s = 0; s < 4; s++)
             sweepers.children[s].update(root.phase, root.current_team, stone)
         if (madi.playing)
-            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stones, stone, sheet)
+            madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stones, stone)
         switch(root.phase) {
         case 0:
             root.p_start_update()
@@ -330,9 +337,6 @@ Item {
         if ( n === 0) {
             stones.initialize(sheet)
             root.current_team = root.starter
-            for (var i = 0; i < stones.count; i++){
-                madi.d_stones_target[i] = 1000000
-            }
         }
         stone.xC = sheet.x + 20
         stone.yC = sheet.y + sheet.height / 2
@@ -346,7 +350,8 @@ Item {
         root.current_team = root.starter
         root.ready = false
         for (var i = 0; i < stones.count; i++){
-            madi.d_stones_target[i] = 1000000
+            stones.children[i].d2_target = -1
+            stones.children[i].area = -1
         }
         root.phase = 0
     }
@@ -359,6 +364,10 @@ Item {
         hud.total_score = [0, 0]
         root.current_end = 0
         root.current_stone = 0
+        for (var i = 0; i < stones.count.length; i++){
+            stones.children[i].d2_target = -1
+            stones.children[i].area = -1
+        }
         root.ready = false
         root.phase = 0
     }
@@ -369,12 +378,16 @@ Item {
         var array = []
         var k = 0
         for (var i = 0; i < stones.count; i++){
-            var d = dsquare_target(stones.children[i].xC, stones.children[i].yC)
-            madi.d_stones_target[i] = d
+            var d = root.dsquare_target(stones.children[i].xC, stones.children[i].yC)
             if (d < dmax * dmax){
+                stones.children[i].d2_target = d
                 array[k] = [i, d]
                 k ++
             }
+            else {
+                stones.children[i].d2_target = -1
+            }
+            stones.children[i].area = root.find_area(stones.children[i].xC, stones.children[i].yC)
         }
         array.sort(Tools.compare)
         if (array.length > 0){
@@ -409,5 +422,22 @@ Item {
         var xt = sheet.x + sheet.x_target
         var yt = sheet.y + sheet.y_target
         return Tools.dsquare(xc, yc, xt, yt)
+    }
+
+    function find_area(xc, yc) {
+        var xt = sheet.x + sheet.x_target
+        var yt = sheet.y + sheet.y_target
+        var rt = sheet.r_target + stone.radius
+        var a = Tools.slope(xc, yc, xt, yt)
+        var r2 = Tools.dsquare(xc, yc, xt, yt)
+        if (r2 > rt * rt) {
+            return -1
+        }
+        else if (r2 > rt * rt / 9) {
+            return Math.floor(8 * (180 + a) / 360)
+        }
+        else {
+            return 8
+        }
     }
 }

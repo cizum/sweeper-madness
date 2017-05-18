@@ -25,6 +25,9 @@ Item {
     property double yC_future: 0
     rotation: root.angle
 
+    property double d2_target: -1
+    property int area: -1
+
     StoneClassic{
         anchors.fill: parent
         team: parent.team
@@ -97,6 +100,42 @@ Item {
         root.xC_future = r[0]
         root.yC_future = r[1]
         return r
+    }
+
+    function find_y_start(y0, s0, d0) {
+        var t = s0 / root.f_friction
+        var ff = root.f_friction
+        var cv = Math.PI / 180
+        var fcr = (d0 > 0 ? 1 : -1) * root.f_curl * cv
+        var d_rad = d0 * cv
+        var cosd = Math.cos(d_rad)
+        var sind = Math.sin(d_rad)
+
+        var y_start = y0 - 1 / fcr * (cosd - sind * Math.sin(fcr * (- s0 * t + 1 / 2 * ff * t * t))
+                                          - cosd * Math.cos(fcr * (- s0 * t + 1 / 2 * ff * t * t)))
+        if (y_start > 400)
+            y_start = 400
+        else if (y_start < 300)
+            y_start = 300
+        return y_start
+    }
+
+    function find_y_start_shoot(y0, s0, d0) {
+        var t = 0.5 * s0 / root.f_friction
+        var ff = root.f_friction
+        var cv = Math.PI / 180
+        var fcr = (d0 > 0 ? 1 : -1) * root.f_curl * cv
+        var d_rad = d0 * cv
+        var cosd = Math.cos(d_rad)
+        var sind = Math.sin(d_rad)
+
+        var y_start = y0 - 1 / fcr * (cosd - sind * Math.sin(fcr * (- s0 * t + 1 / 2 * ff * t * t))
+                                          - cosd * Math.cos(fcr * (- s0 * t + 1 / 2 * ff * t * t)))
+        if (y_start > 400)
+            y_start = 400
+        else if (y_start < 300)
+            y_start = 300
+        return y_start
     }
 }
 
