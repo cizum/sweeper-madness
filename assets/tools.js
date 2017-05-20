@@ -49,16 +49,25 @@ function solve_collision(stone_a, stone_b) {
     var a = slope(stone_b.xC, stone_b.yC, stone_a.xC, stone_a.yC)
     var s1 = stone_a.speed
     var s2 = stone_b.speed
-    var th1rad = (stone_a.direction - a - 90) * Math.PI / 180
-    var th2rad = (stone_b.direction - a - 90) * Math.PI / 180
+    var cpi =  Math.PI / 180
+    var th1rad = (stone_a.direction - a - 90) * cpi
+    var th2rad = (stone_b.direction - a - 90) * cpi
     var cs11 = s1 * Math.cos(th1rad)
     var cs12 = s2 * Math.sin(th2rad)
     var cs21 = s1 * Math.sin(th1rad)
     var cs22 = s2 * Math.cos(th2rad)
     stone_a.speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
     stone_b.speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
-    stone_a.direction = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
-    stone_b.direction = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
-    stone_a.xC = stone_b.xC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.cos(a * Math.PI / 180);
-    stone_a.yC = stone_b.yC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.sin(a * Math.PI / 180);
+    stone_a.direction = Math.atan2(cs12, cs11) / cpi + (a + 90)
+    stone_b.direction = Math.atan2(cs21, cs22) / cpi + (a + 90)
+
+    var a_f = stone_a.future_position(1)
+    var b_f = stone_b.future_position(1)
+    var d_f = dsquare(b_f[0], b_f[1], a_f[0], a_f[1])
+    var diff_f = d_f - stone_a.width * stone_a.width
+    if (diff_f < 0) {
+        var an_f = slope(b_f[0], b_f[1], a_f[0], a_f[1])
+        stone_a.xC = stone_b.xC + stone_a.width * Math.cos(an_f * cpi);
+        stone_a.yC = stone_b.yC + stone_b.width * Math.sin(an_f * cpi);
+    }
 }

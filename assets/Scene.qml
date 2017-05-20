@@ -409,7 +409,8 @@ Item {
         for (var i = 0; i < stones.count; i++) {
             for (var j = i + 1; j < stones.count; j++) {
                 var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
-                if (d < stone.width * stone.width){
+                var diff = d - stone.width * stone.width
+                if (diff < 0){
                     if (stones.children[i].speed > 0 || stones.children[j].speed > 0)
                         soundManager.collide()
                     Tools.solve_collision(stones.children[j], stones.children[i])
