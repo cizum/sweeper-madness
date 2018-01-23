@@ -49,5 +49,8 @@
         <file>main.qml</file>
         <file>assets/scene/hud/FuturePath.qml</file>
         <file>assets/scene/hud/Areas.qml</file>
+        <file>assets/scene/Provider.qml</file>
+        <file>assets/styles/classic/ProviderClassic.qml</file>
+        <file>assets/styles/neon/ProviderNeon.qml</file>
     </qresource>
 </RCC>

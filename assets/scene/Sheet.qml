@@ -37,6 +37,10 @@ Item {
         r_target: root.r_target
         visible: root.style == 1
     }
+
+    function random_colors() {
+        sheet_classic.random_colors()
+    }
 }
 
 

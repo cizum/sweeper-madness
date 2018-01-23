@@ -6,6 +6,7 @@ Item {
     property int count: 16
     property int current_n: 0
     property var current: root.children[current_n]
+    property var next: current_n < (count - 1) ? root.children[current_n + 1] : undefined
     property int style: 0
     signal mark(int x, int y, int a)
     property int mark_period: 500

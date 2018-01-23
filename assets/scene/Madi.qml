@@ -265,11 +265,11 @@ Item {
                     if (stone.team === 0) {
                         if (stone.area === 4 || stone.area === 5 || stone.area === 6) {
                             root.x_wanted = root.x_house
-                            root.y_wanted = root.y_house + 0.7 * root.r_house
+                            root.y_wanted = root.y_house + 0.6 * root.r_house
                         }
                         else if (stone.area === 3 || stone.area === 2 || stone.area === 1) {
                             root.x_wanted = root.x_house
-                            root.y_wanted = root.y_house - 0.7 * root.r_house
+                            root.y_wanted = root.y_house - 0.6 * root.r_house
                         }
                         else if (stone.area !== -1){
                             root.x_wanted = root.x_house
@@ -328,14 +328,14 @@ Item {
                     if (stone.team === 0) {
                         if (stone.area === 4 || stone.area === 5) {
                             root.x_wanted = root.x_house - 0.8 * root.r_house
-                            root.y_wanted = root.y_house + 0.2 * root.r_house
+                            root.y_wanted = root.y_house + 0.15 * root.r_house
                         }
                         else if (stone.area === 3 || stone.area === 2) {
                             root.x_wanted = root.x_house - 0.8 * root.r_house
-                            root.y_wanted = root.y_house - 0.2 * root.r_house
+                            root.y_wanted = root.y_house - 0.15 * root.r_house
                         }
                         else if (stone.area !== -1){
-                            root.x_wanted = root.x_house - root.r_house
+                            root.x_wanted = root.x_house - 0.9 * root.r_house
                             root.y_wanted = root.y_house
                         }
                     }

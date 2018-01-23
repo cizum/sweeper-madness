@@ -12,6 +12,10 @@ Rectangle {
     property int y_target: root.height / 2
     property int r_target: root.d_target / 2
 
+    property int color_play: 0
+    property var ex_colors: ["#151590", "#901515", "#159015", "#151590"]
+    property var in_colors: ["#901515", "#151590", "#151590", "#159015"]
+
     Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
@@ -48,7 +52,7 @@ Rectangle {
         radius: width / 2
         border.width: 45
         color: "transparent"
-        border.color: "#151590"
+        border.color: root.ex_colors[root.color_play]
         Rectangle {
             anchors.centerIn: parent
             height: parent.width/3
@@ -56,7 +60,7 @@ Rectangle {
             radius: width/2
             border.width: 25
             color: "transparent"
-            border.color: "#901515"
+            border.color: root.in_colors[root.color_play]
         }
         opacity: 0.8
     }
@@ -66,5 +70,9 @@ Rectangle {
         color: "transparent"
         border.color: "#505050"
         border.width: 2
+    }
+
+    function random_colors() {
+        root.color_play = Math.floor(3 * Math.random())
     }
 }

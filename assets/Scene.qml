@@ -11,7 +11,7 @@ Item {
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int players: 2
     property int ends: 1
-    property int starter: Math.floor(Math.random() * 2)
+    property int starter: 0
     property int current_end: 0
     property int stones_count: 2
     property int current_stone: 0
@@ -47,7 +47,7 @@ Item {
         y_house: sheet.y + sheet.y_target
         r_house: sheet.r_target
         playing: (root.players == 1 && root.current_team == 0)
-        has_last_throw: root.starter == 0
+        has_last_throw: root.starter == 1
         onPressSpace: root.onSpacePressed()
         onPressUp: root.onUpPressed()
         onPressDown: root.onDownPressed()
@@ -113,6 +113,7 @@ Item {
         starter: root.starter
     }
     property alias stone: stones.current
+    property alias nextStone: stones.next
 
     Item {
         id: launchers
@@ -132,6 +133,22 @@ Item {
                 yStone: stone.yC - stone.height / 3
                 xOff: 400
                 yOff: team == 0 ? 550 : 190
+            }
+        }
+    }
+
+    Item {
+        id: providers
+        anchors.fill: parent
+        Repeater {
+            model: 2
+            Provider{
+                style: root.style
+                team: index
+                xC: xOff
+                yC: yOff
+                xOff: 50
+                yOff: team === 0 ? 550 : 190
             }
         }
     }
@@ -162,6 +179,8 @@ Item {
     function update() {
         launchers.children[0].update(root.phase, root.current_team)
         launchers.children[1].update(root.phase, root.current_team)
+        providers.children[0].update(root.phase, root.current_team)
+        providers.children[1].update(root.phase, root.current_team)
         for (var s = 0; s < 4; s++)
             sweepers.children[s].update(root.phase, root.current_team, stone)
         if (madi.playing)
@@ -198,6 +217,10 @@ Item {
         case 4:
             stone.speed = inputs.speed
             stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
+            if (nextStone) {
+                nextStone.target(sheet.x + 20, sheet.y + sheet.height / 2)
+            }
+            providers.children[1 - root.current_team].shoot()
             break
         }
     }
@@ -338,8 +361,10 @@ Item {
             stones.initialize(sheet)
             root.current_team = root.starter
         }
-        stone.xC = sheet.x + 20
-        stone.yC = sheet.y + sheet.height / 2
+        stone.initialize(sheet.x + 20, sheet.y + sheet.height / 2)
+        nextStone = stones.current_n < (stones.count - 1) ? stones.children[stones.current_n + 1] : undefined
+        root.initializeProvider(0)
+        root.initializeProvider(1)
         madi.ready = false
         root.ready = true
     }
@@ -358,13 +383,15 @@ Item {
 
     function restart(){
         root.finished = false
+        root.starter = Math.floor(Math.random() * 2)
+        sheet.random_colors()
         marks.clear()
         hud.initialize()
         hud.score = [0, 0]
         hud.total_score = [0, 0]
         root.current_end = 0
         root.current_stone = 0
-        for (var i = 0; i < stones.count.length; i++){
+        for (var i = 0; i < stones.count; i++){
             stones.children[i].d2_target = -1
             stones.children[i].area = -1
         }
@@ -440,5 +467,20 @@ Item {
         else {
             return 8
         }
+    }
+
+    function initializeProvider(team) {
+        var startStoneIndex = root.current_stone + 1 + (root.current_team === team ? 1 : 0)
+        startStoneIndex = startStoneIndex < stones.count ? startStoneIndex : -1
+        var endStoneIndex = root.current_stone + 2 + (root.current_team === team ? 2 : 1)
+        endStoneIndex = endStoneIndex < stones.count ? endStoneIndex : -1
+        var xOff = providers.children[team].xOff
+        var yOff = providers.children[team].yOff
+        providers.children[team].xStart = startStoneIndex != -1 ? stones.children[startStoneIndex].xC : xOff
+        providers.children[team].yStart = startStoneIndex != -1 ? stones.children[startStoneIndex].yC + (team === 0 ? 25 : -25) : yOff
+        providers.children[team].xEnd = endStoneIndex != -1 ? stones.children[endStoneIndex].xC : xOff
+        providers.children[team].yEnd = endStoneIndex != -1 ? stones.children[endStoneIndex].yC + (team === 0 ? 25 : -25) : yOff
+        providers.children[team].xStone = root.current_stone < stones.count ?  stones.children[root.current_stone].xC : xOff
+        providers.children[team].yStone = root.current_stone < stones.count ?  stones.children[root.current_stone].yC : yOff
     }
 }

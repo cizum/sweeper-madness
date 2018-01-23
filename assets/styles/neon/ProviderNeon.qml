@@ -3,56 +3,13 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: root
-    width: root.lying ? 22 : 31
-    height: root.lying ? 22 : 15
+    width: 31
+    height: 15
     property int team: 0
     property var colors: ["#ffbb00", "#00bbff", "#ffffff"]
     property string color: root.colors[team]
     property string borderColor: "#101010"
-    property int headOffset: root.lying ? - 8 : - root.height / 4
-    property bool lying: false
-
-    Rectangle {
-        id: broom
-        width: 4
-        height: 15
-        radius: width / 2
-        z: -1
-        anchors.bottom: left_arm.top
-        anchors.bottomMargin: -3
-        anchors.horizontalCenterOffset: -5
-        anchors.horizontalCenter: left_arm.horizontalCenter
-        color: "#ffffff"
-        border.color: root.borderColor
-        antialiasing: true
-        visible: false
-
-        Rectangle {
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 15
-            height: 6
-            radius: 3
-            color: "#ffffff"
-            border.color: "#101010"
-            antialiasing: true
-        }
-    }
-
-    Glow {
-        anchors.fill: broom
-        source: broom
-        color: root.color
-        samples: 17
-        spread: 0.1
-        antialiasing: true
-
-        transform: Rotation {
-            origin.x: 0
-            origin.y: left_arm.height
-            angle: - 15
-        }
-    }
+    property int headOffset: - root.height / 4
 
     Rectangle {
         id: left_arm
@@ -62,7 +19,7 @@ Item {
         z: -1
         x: 0
         anchors.bottom: parent.verticalCenter
-        anchors.bottomMargin: parent.height / 4
+        anchors.bottomMargin: parent.height / 6
         color: root.color
         border.color: root.borderColor
         antialiasing: true
@@ -80,19 +37,19 @@ Item {
         transform: Rotation {
             origin.x: 0
             origin.y: left_arm.height
-            angle: -20
+            angle: root.team == 0 ? -17 : 5
         }
     }
 
     Rectangle {
         id: right_arm
         width: 6
-        height: 18
+        height: 15
         radius: width / 2
         z: -1
         x: parent.width - width
         anchors.bottom: parent.verticalCenter
-        anchors.bottomMargin: parent.height / 3
+        anchors.bottomMargin: parent.height / 6
         color: root.color
         border.color: root.borderColor
         antialiasing: true
@@ -110,22 +67,35 @@ Item {
         transform: Rotation {
             origin.x: right_arm.width
             origin.y: left_arm.height
-            angle: -5
+            angle: root.team == 0 ? -5 : 17
         }
     }
 
     Rectangle {
         id: leg
-        width: 9
-        height: 27
+        width: 8
+        height: 0
         z: -1
         radius: width / 2 + 1
         anchors.top: parent.verticalCenter
-        x: parent.width / 2
+        x: parent.width / 2 - (root.team == 0 ? 0 : width)
         color: root.color
         border.color: "#101010"
         antialiasing: true
         visible: false
+        SequentialAnimation on height {
+            id: leg_anim
+            NumberAnimation{
+                duration: 100
+                from: 0
+                to: 25
+            }
+            NumberAnimation{
+                duration: 300
+                from: 25
+                to: 0
+            }
+        }
     }
 
     Glow {
@@ -135,17 +105,16 @@ Item {
         samples: 17
         antialiasing: true
         spread: 0.1
-        visible: root.lying
     }
 
     Rectangle {
         id: foot
-        width: 9
-        height: 7
+        width: 8
+        height: 5
         z: -1
         radius: width / 2 + 1
         anchors.horizontalCenter: leg.horizontalCenter
-        anchors.bottom: leg.bottom
+        anchors.top: leg.top
         color: root.color
         border.color: "#101010"
         antialiasing: true
@@ -159,7 +128,6 @@ Item {
         samples: 17
         antialiasing: true
         spread: 0.1
-        visible: root.lying
     }
 
     Rectangle{
@@ -201,5 +169,9 @@ Item {
         samples: 17
         antialiasing: true
         spread: 0.1
+    }
+
+    function shoot() {
+        leg_anim.restart()
     }
 }

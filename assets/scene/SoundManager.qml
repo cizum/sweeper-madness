@@ -5,7 +5,7 @@ Item {
     id: root
     anchors.fill: parent
     property int gameState: 0
-    property bool mute: false
+    property bool mute: true
     signal applauseForPoint()
     signal collide()
 

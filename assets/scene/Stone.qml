@@ -40,6 +40,13 @@ Item {
         visible: root.style == 1
     }
 
+    function initialize(xc, yc) {
+        root.xC = sheet.x + 20
+        root.yC = sheet.y + sheet.height / 2
+        root.f_curl = 0.02
+        root.f_friction = 0.005
+    }
+
     function custom_move(speed, direction) {
         var direction_rad = direction * Math.PI / 180
         xC = xC + speed * Math.cos(direction_rad);
@@ -131,11 +138,17 @@ Item {
 
         var y_start = y0 - 1 / fcr * (cosd - sind * Math.sin(fcr * (- s0 * t + 1 / 2 * ff * t * t))
                                           - cosd * Math.cos(fcr * (- s0 * t + 1 / 2 * ff * t * t)))
-        if (y_start > 400)
-            y_start = 400
-        else if (y_start < 300)
-            y_start = 300
+        if (y_start > 440)
+            y_start = 440
+        else if (y_start < 260)
+            y_start = 260
         return y_start
+    }
+
+    function target(tx, ty) {
+        root.speed = Math.sqrt(2 * f_friction * Math.sqrt(Tools.dsquare(root.xC, root.yC, tx, ty)))
+        root.direction = Tools.slope(root.xC, root.yC, tx, ty)
+        root.f_curl = 0
     }
 }
 
