@@ -37,8 +37,8 @@ $ ./sweeper-madness
 
 The game can be played using touch buttons or using the following keyboard keys:
 
-- First, use RIGHT and LEFT arrows to move the launcher on the starting line.
+- First, use LEFT and RIGHT arrows to move the launcher on the starting line.
 - Validate his postion using SPACE key.
 - Then, validate the direction of the throw using SPACE key, once again.
 - And validate the power of the throw using SPACE key, one more time.
-- Finallly, press RIGHT and LEFT arrows to sweep repectively left and right.
+- Finallly, press LEFT and RIGHT arrows to sweep repectively left and right.
