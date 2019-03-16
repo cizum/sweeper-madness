@@ -6,37 +6,53 @@ Item {
     anchors.fill: parent
     property int gameState: 0
     property bool mute: false
-    signal applauseForPoint()
     signal collide()
+    signal sweep()
 
     onGameStateChanged: {
         if(root.gameState) {
-            startSound.play()
+            theme.play()
         }
         else{
-            startSound.stop()
+            theme.stop()
         }
     }
+
     onApplauseForPoint: pointApplause.play()
     onCollide: collision.play()
+    onSweep: {
+        if (sweepIndex == 0)
+            sweep1.play()
+        else {
+            sweep2.play()
+        }
+        sweepIndex = (sweepIndex + 1) % 2
+    }
     onMuteChanged: opacity_mute_anim.restart()
 
-
     Audio{
-        id: startSound
-        source: "../../sounds/gamestart.ogg"
-        muted: root.mute
-    }
-
-    Audio{
-        id: pointApplause
-        source: "../../sounds/applause.ogg"
-        muted: root.mute
+        id: theme
+        source: "../../sounds/theme.ogg"
+        loops: Audio.Infinite
+        muted: true// root.mute
     }
 
     Audio{
         id: collision
         source: "../../sounds/choc.ogg"
+        muted: root.mute
+    }
+
+    property int sweepIndex: 0
+    Audio{
+        id: sweep1
+        source: "../../sounds/sweep.ogg"
+        muted: root.mute
+    }
+
+    Audio{
+        id: sweep2
+        source: "../../sounds/sweep.ogg"
         muted: root.mute
     }
 
@@ -65,6 +81,13 @@ Item {
                 duration: 200
             }
         }
+    }
+
+    function update(phase) {
+        if (phase == 4)
+            sweeping.play()
+        else
+            sweeping.stop()
     }
 }
 

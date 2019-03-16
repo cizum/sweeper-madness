@@ -2,26 +2,18 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "src/imagepix.h"
-#include "src/imageprovider.h"
-
+#include "translator.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    ImageProvider* imageProvider = new ImageProvider();
-    ImagePix* imagePix = new ImagePix();
-    QString version = "desktop";
-    #ifdef MOBILE
-    version = "mobile";
-    #endif
 
-    imageProvider->qImage = imagePix->qImage;
+    qmlRegisterSingletonType(QUrl(QStringLiteral("qrc:/assets/Style.qml")), "krus.morten.style", 1, 0, "Style");
 
-    engine.addImageProvider(QLatin1String("provider"), imageProvider);
-    engine.rootContext()->setContextProperty("imagePix",imagePix);
-    engine.rootContext()->setContextProperty("version", version);
+    Translator translator(&engine);
+    engine.rootContext()->setContextProperty("translator", static_cast<QObject*>(&translator));
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();

@@ -1,19 +1,22 @@
-import QtQuick 2.0
+import QtQuick 2.9
 
 Item {
     id: root
-    x: root.xC - root.r
-    y: root.yC - root.r
-    width: 2 * root.r + 1
-    height: 2 * root.r + 1
+
+    x: xC - r
+    y: yC - r
+    width: 2 * r + 1
+    height: 2 * r + 1
+
     property double xC: 0
     property double yC: 0
     property double r: 100
-    property double ir: root.r / 3
-    property int n_slices: 8
+    property double ir: r / 3
+    property int nSlices: 8
 
     Rectangle {
-        id: border_circle
+        id: borderCircle
+
         anchors.centerIn: parent
         width: 2 * root.r + 1
         height: 2 * root.r + 1
@@ -24,7 +27,8 @@ Item {
     }
 
     Rectangle {
-        id: inside_circle
+        id: insideCircle
+
         anchors.centerIn: parent
         width: 2 * root.ir + 1
         height: 2 * root.ir + 1
@@ -36,29 +40,29 @@ Item {
 
     Item {
         id: slices
+
         anchors.centerIn: parent
         width: 0
         height: 0
+
         Repeater {
-            model: root.n_slices
+            model: root.nSlices
+
             Item {
                 width: root.r
                 height: 3
                 antialiasing: true
+                transform: Rotation {
+                    origin {x: 0; y: 0; z: 0}
+                    axis {x: 0; y: 0; z: 1}
+                    angle: index * 360 / root.nSlices
+                }
+
                 Rectangle {
                     anchors.right: parent.right
                     width: root.r - root.ir
                     height: 3
                     color: "#ffffff"
-                }
-                transform: Rotation {
-                    origin.x: 0
-                    origin.y: 0
-                    origin.z: 0
-                    axis.x: 0
-                    axis.y: 0
-                    axis.z: 1
-                    angle: index * 360 / root.n_slices
                 }
             }
         }

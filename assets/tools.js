@@ -1,17 +1,17 @@
 
-function x1_gap(ax, ay, angle) {
+function x1Gap(ax, ay, angle) {
     return ax * Math.cos(angle) - ay * Math.sin(angle)
 }
 
-function y1_gap(ax, ay, angle) {
+function y1Gap(ax, ay, angle) {
     return ax * Math.sin(angle) + ay * Math.cos(angle)
 }
 
-function x2_gap(ax, ay, angle) {
+function x2Gap(ax, ay, angle) {
     return ax * Math.cos(angle) + ay * Math.sin(angle)
 }
 
-function y2_gap(ax, ay, angle) {
+function y2Gap(ax, ay, angle) {
     return ax * Math.sin(angle) - ay * Math.cos(angle)
 }
 
@@ -39,26 +39,43 @@ function dsquare(x0, y0, x1, y1) {
 
 function getClose(a0, a1, speed) {
     var d = Math.abs(a1 - a0)
-    if (d < speed )
+    if (d < Math.abs(speed) )
         return a1
     else
         return a0 + speed
 }
 
-function solve_collision(stone_a, stone_b) {
-    var a = slope(stone_b.xC, stone_b.yC, stone_a.xC, stone_a.yC)
-    var s1 = stone_a.speed
-    var s2 = stone_b.speed
-    var th1rad = (stone_a.direction - a - 90) * Math.PI / 180
-    var th2rad = (stone_b.direction - a - 90) * Math.PI / 180
+function solveCollision(stoneA, stoneB) {
+    var a = slope(stoneB.xC, stoneB.yC, stoneA.xC, stoneA.yC)
+    var s1 = stoneA.speed
+    var s2 = stoneB.speed
+    var cpi =  Math.PI / 180
+    var th1rad = (stoneA.direction - a - 90) * cpi
+    var th2rad = (stoneB.direction - a - 90) * cpi
     var cs11 = s1 * Math.cos(th1rad)
     var cs12 = s2 * Math.sin(th2rad)
     var cs21 = s1 * Math.sin(th1rad)
     var cs22 = s2 * Math.cos(th2rad)
-    stone_a.speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
-    stone_b.speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
-    stone_a.direction = Math.atan2(cs12, cs11) * 180 / Math.PI + (a + 90)
-    stone_b.direction = Math.atan2(cs21, cs22) * 180 / Math.PI + (a + 90)
-    stone_a.xC = stone_b.xC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.cos(a * Math.PI / 180);
-    stone_a.yC = stone_b.yC + (stone_a.width / 2 + stone_b.width / 2 + 2) * Math.sin(a * Math.PI / 180);
+    stoneA.speed = Math.sqrt(cs11 * cs11 + cs12 * cs12)
+    stoneB.speed = Math.sqrt(cs21 * cs21 + cs22 * cs22)
+    stoneA.direction = Math.atan2(cs12, cs11) / cpi + (a + 90)
+    stoneB.direction = Math.atan2(cs21, cs22) / cpi + (a + 90)
+
+    var aF = stoneA.futurePosition(1)
+    var bF = stoneB.futurePosition(1)
+    var dF = dsquare(bF[0], bF[1], aF[0], aF[1])
+    var diffF = dF - stoneA.width * stoneA.width
+    if (diffF < 0) {
+        var anF = slope(bF[0], bF[1], aF[0], aF[1])
+        stoneA.xC = stoneB.xC + stoneA.width * Math.cos(anF * cpi);
+        stoneA.yC = stoneB.yC + stoneB.width * Math.sin(anF * cpi);
+    }
+}
+
+function powerToSpeed(power) {
+    return Math.max(Math.min(power / 27, 4), 2)
+}
+
+function powerToBar(power, index) {
+
 }

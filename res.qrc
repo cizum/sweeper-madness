@@ -1,12 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/menu/Button.qml</file>
         <file>assets/menu/ChoiceList.qml</file>
         <file>assets/menu/Title.qml</file>
         <file>assets/scene/controls/GameButton.qml</file>
-        <file>assets/scene/hud/DirectionBar.qml</file>
-        <file>assets/scene/hud/Indications.qml</file>
-        <file>assets/scene/hud/PowerBar.qml</file>
+        <file>assets/scene/controls/DirectionPowerBar.qml</file>
         <file>assets/scene/hud/Score.qml</file>
         <file>assets/scene/hud/TextNum.qml</file>
         <file>assets/scene/hud/Winner.qml</file>
@@ -15,39 +12,41 @@
         <file>assets/scene/Inputs.qml</file>
         <file>assets/scene/Launcher.qml</file>
         <file>assets/scene/Madi.qml</file>
-        <file>assets/scene/Marks.qml</file>
         <file>assets/scene/Sheet.qml</file>
-        <file>assets/scene/SoundManager.qml</file>
         <file>assets/scene/Stone.qml</file>
         <file>assets/scene/Stones.qml</file>
         <file>assets/scene/Sweeper.qml</file>
-        <file>assets/styles/classic/BackgroundClassic.qml</file>
-        <file>assets/styles/classic/DirectionBarClassic.qml</file>
-        <file>assets/styles/classic/LauncherClassic.qml</file>
-        <file>assets/styles/classic/MarkClassic.qml</file>
-        <file>assets/styles/classic/PowerBarClassic.qml</file>
-        <file>assets/styles/classic/SheetClassic.qml</file>
-        <file>assets/styles/classic/StoneClassic.qml</file>
-        <file>assets/styles/classic/SweeperClassic.qml</file>
-        <file>assets/styles/neon/BackgroundNeon.qml</file>
-        <file>assets/styles/neon/DirectionBarNeon.qml</file>
-        <file>assets/styles/neon/LauncherNeon.qml</file>
-        <file>assets/styles/neon/MarkNeon.qml</file>
-        <file>assets/styles/neon/PowerBarNeon.qml</file>
-        <file>assets/styles/neon/SheetNeon.qml</file>
-        <file>assets/styles/neon/StoneNeon.qml</file>
-        <file>assets/styles/neon/SweeperNeon.qml</file>
+        <file>assets/scene/skins/LauncherSkin.qml</file>
+        <file>assets/scene/skins/StoneSkin.qml</file>
+        <file>assets/scene/skins/SweeperSkin.qml</file>
+        <file>assets/scene/skins/ProviderSkin.qml</file>
+        <file>assets/scene/skins/MoonSkin.qml</file>
+        <file>assets/scene/skins/HeadSkin.qml</file>
+        <file>assets/scene/skins/ArmSkin.qml</file>
+        <file>assets/scene/skins/LegSkin.qml</file>
+        <file>assets/scene/skins/BodySkin.qml</file>
+        <file>assets/scene/skins/PlayerSkin.qml</file>
+        <file>assets/scene/skins/BroomSkin.qml</file>
         <file>assets/Background.qml</file>
         <file>assets/Menu.qml</file>
         <file>assets/Scene.qml</file>
         <file>assets/tools.js</file>
-        <file>fonts/paintypaint.ttf</file>
-        <file>fonts/paintypaint.txt</file>
-        <file>sounds/applause.ogg</file>
-        <file>sounds/choc.ogg</file>
-        <file>sounds/gamestart.ogg</file>
         <file>main.qml</file>
         <file>assets/scene/hud/FuturePath.qml</file>
         <file>assets/scene/hud/Areas.qml</file>
+        <file>assets/scene/Provider.qml</file>
+        <file>assets/scene/controls/ButtonIcon.qml</file>
+        <file>fonts/iamaplayer.otf</file>
+        <file>fonts/iamaplayer.ttf</file>
+        <file>assets/scene/controls/SpaceButton.qml</file>
+        <file>sweeper-madness.ico</file>
+        <file>assets/scene/Tutorial.qml</file>
+        <file>assets/scene/tutorial/BaseText.qml</file>
+        <file>language/en.qm</file>
+        <file>language/en.ts</file>
+        <file>language/fr.qm</file>
+        <file>language/fr.ts</file>
+        <file>assets/scene/controls/ArrowPart.qml</file>
+        <file>assets/Style.qml</file>
     </qresource>
 </RCC>

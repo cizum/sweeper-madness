@@ -1,34 +1,36 @@
 /* Mad intelligence */
-import QtQuick 2.0
+import QtQuick 2.9
 import "../tools.js" as Tools
+
+import krus.morten.style 1.0
 
 Item {
     id: root
+
     property bool playing: false
     property bool ready: false
-    property int position_target: 0
-    property int direction_target: 0
-    property int power_target: 0
+    property int positionTarget: 0
+    property int directionTarget: 0
+    property int powerTarget: 0
+    property bool down: false
+    property bool up: false
+    property bool downPressable: true
+    property bool upPressable: true
+    property double xWanted: 0
+    property double yWanted: 0
+    property double xHouse: 0
+    property double yHouse: 0
+    property double rHouse: 0
+    property bool hasLastThrow: false
+    property int ownStonesInHouse: 0
+    property int rivalStonesInHouse: 0
+    property int strategy: 0 // 0 point 1 freeze 2 centered shoot 3 left shoot 4 right shoot
+
     signal pressDown()
     signal pressUp()
     signal pressSpace()
     signal releaseDown()
     signal releaseUp()
-    property bool down: false
-    property bool up: false
-    property bool down_pressable: true
-    property bool up_pressable: true
-    property double x_wanted: 0
-    property double y_wanted: 0
-    property double x_house: 0
-    property double y_house: 0
-    property double r_house: 0
-
-    property bool has_last_throw: false
-    property int own_stones_in_house: 0
-    property int rival_stones_in_house: 0
-
-    property int strategy: 0 // 0 point 1 freeze 2 centered shoot 3 left shoot 4 right shoot
 
     onPressDown: root.down = true
     onReleaseDown: root.down = false
@@ -39,19 +41,19 @@ Item {
         switch(phase) {
         case 1:
             if (!root.ready) {
-                root.analyze_situtation(stones)
-                root.define_strategy(stones)
+                root.analyzeSitutation(stones)
+                root.defineStrategy(stones)
                 root.choose(position, stone)
             }
             else {
-                if (Math.abs(position - root.position_target) < 1) {
+                if (Math.abs(position - root.positionTarget) < 1) {
                     if (root.down)
                         root.releaseDown()
                     if (root.up)
                         root.releaseUp()
                     root.pressSpace()
                 }
-                else if (position < root.position_target){
+                else if (position < root.positionTarget){
                     if (root.up)
                         root.releaseUp()
                     if (!root.down)
@@ -66,12 +68,12 @@ Item {
             }
             break
         case 2:
-            if (near(direction, root.direction_target, 4)) {
+            if (near(direction, root.directionTarget, 4)) {
                 root.pressSpace()
             }
             break
         case 3:
-            if (near(power, root.power_target, 6)) {
+            if (near(power, root.powerTarget, 6)) {
                 root.pressSpace()
             }
             break
@@ -86,43 +88,43 @@ Item {
         var d = 0
         switch(root.strategy) {
         case 0:
-            root.direction_target = root.smart_random_direction(root.y_wanted - position)
-            root.power_target = root.random_power(false)
-            s = root.power_target < 60 ? 2 : root.power_target / 30
-            d = root.direction_target * Math.PI / 180
-            root.position_target = stone.find_y_start(root.y_wanted, s, d)
+            root.directionTarget = root.smartRandomDirection(root.xWanted - position)
+            root.powerTarget = root.randomPower(false)
+            s = Tools.powerToSpeed(root.powerTarget)
+            d = (root.directionTarget - 90) * Math.PI / 180
+            root.positionTarget = 300 + Math.random() * 100
             break
         case 1:
-            root.direction_target = root.smart_random_direction(root.y_wanted - position)
-            root.power_target = root.random_power(false)
-            root.position_target = position + Math.random() * 60 - 30
-            s = root.power_target < 60 ? 2 : root.power_target / 30
-            d = root.direction_target * Math.PI / 180
-            root.position_target = stone.find_y_start(root.y_wanted, s, d)
+            root.directionTarget = root.smartRandomDirection(root.xWanted - position)
+            root.powerTarget = root.randomPower(false)
+            root.positionTarget = position + Math.random() * 60 - 30
+            s = Tools.powerToSpeed(root.powerTarget)
+            d = (root.directionTarget - 90)  * Math.PI / 180
+            root.positionTarget = 300 + Math.random() * 100
             break
         case 2:
-            root.direction_target = root.smart_random_direction(root.y_wanted - position)
-            root.power_target = root.random_power(true)
-            root.position_target = position + Math.random() * 60 - 30
-            s = root.power_target < 60 ? 2 : root.power_target / 30
-            d = root.direction_target * Math.PI / 180
-            root.position_target = stone.find_y_start_shoot(root.y_wanted, s, d)
+            root.directionTarget = root.smartRandomDirection(root.xWanted - position)
+            root.powerTarget = root.randomPower(true)
+            root.positionTarget = position + Math.random() * 60 - 30
+            s = Tools.powerToSpeed(root.powerTarget)
+            d = (root.directionTarget - 90)  * Math.PI / 180
+            root.positionTarget = 300 + Math.random() * 100
             break
         case 3:
-            root.direction_target = root.smart_random_direction(root.y_wanted - position)
-            root.power_target = root.random_power(true)
-            root.position_target = position + Math.random() * 60 - 30
-            s = root.power_target < 60 ? 2 : root.power_target / 30
-            d = root.direction_target * Math.PI / 180
-            root.position_target = stone.find_y_start_shoot(root.y_wanted, s, d)
+            root.directionTarget = root.smartRandomDirection(root.xWanted - position)
+            root.powerTarget = root.randomPower(true)
+            root.positionTarget = position + Math.random() * 60 - 30
+            s = Tools.powerToSpeed(root.powerTarget)
+            d = (root.directionTarget - 90)  * Math.PI / 180
+            root.positionTarget = 300 + Math.random() * 100
             break
         case 4:
-            root.direction_target = root.smart_random_direction(root.y_wanted - position)
-            root.power_target = root.random_power(true)
-            root.position_target = position + Math.random() * 60 - 30
-            s = root.power_target < 60 ? 2 : root.power_target / 30
-            d = root.direction_target * Math.PI / 180
-            root.position_target = stone.find_y_start_shoot(root.y_wanted, s, d)
+            root.directionTarget = root.smartRandomDirection(root.xWanted - position)
+            root.powerTarget = root.randomPower(true)
+            root.positionTarget = position + Math.random() * 60 - 30
+            s = Tools.powerToSpeed(root.powerTarget)
+            d = (root.directionTarget - 90)  * Math.PI / 180
+            root.positionTarget = 300 + Math.random() * 100
             break
         }
         root.ready = true
@@ -139,255 +141,258 @@ Item {
     function adapt(stone) {
         switch(root.strategy) {
         case 0:
-            root.adapt_point(stone, root.x_wanted, root.y_wanted)
+            root.adaptPoint(stone, root.xWanted, root.yWanted)
             break
         case 1:
-            root.adapt_point(stone, root.x_wanted - 2 * stone.radius, root.y_wanted)
+            root.adaptPoint(stone, root.xWanted, root.yWanted + 2 * stone.radius)
             break
         case 2:
-            root.adapt_shoot(stone, root.x_wanted, root.y_wanted)
+            root.adaptShoot(stone, root.xWanted, root.yWanted)
             break
         case 3:
-            root.adapt_shoot(stone, root.x_wanted, root.y_wanted - stone.radius)
+            root.adaptShoot(stone, root.xWanted - stone.radius, root.yWanted)
             break
         case 4:
-            root.adapt_shoot(stone, root.x_wanted, root.y_wanted + stone.radius)
+            root.adaptShoot(stone, root.xWanted + stone.radius, root.yWanted)
             break
         }
     }
 
-    function adapt_point(stone, x, y) {
-        if (stone.speed > 0 && stone.direction > -60 && stone.direction < 60) {
-            var xf = stone.xC_future
-            var yf = stone.yC_future
-            if (xf <  x) {
-                if (yf <  y - 20) {
-                    sweep_up()
+    function adaptPoint(stone, x, y) {
+        if (stone.speed > 0 && stone.direction > -150 && stone.direction < -30) {
+            var xf = stone.xCFuture
+            var yf = stone.yCFuture
+            if (yf >  y) {
+                if (xf <  x - 20) {
+                    sweepUp()
                 }
-                else if (yf > y + 20) {
-                    sweep_down()
+                else if (xf > x + 20) {
+                    sweepDown()
                 }
                 else {
-                    sweep_up()
-                    sweep_down()
+                    sweepUp()
+                    sweepDown()
                 }
             }
         }
     }
 
-    function adapt_shoot(stone, x, y) {
+    function adaptShoot(stone, x, y) {
         var far = true
-        if (stone.speed > 0 && stone.direction > -60 && stone.direction < 60) {
-            var end_time = stone.end_time()
+        if (stone.speed > 0 && stone.direction > -150 && stone.direction < -30) {
+            var endTime = stone.endTime()
             for (var i = 0; i < 20; i++) {
-                var future_pos = stone.future_position(i * end_time / 20)
-                if (future_pos[0] > x - 20 && future_pos[0] < x + 20) {
+                var futurePos = stone.futurePosition(i * endTime / 20)
+                if (futurePos[1] > y - 20 && futurePos[1] < y + 20) {
                     far = false
-                    if (future_pos[1] < y) {
-                        sweep_up()
+                    if (futurePos[0] < x) {
+                        sweepUp()
                         break
                     }
-                    else if (future_pos[1] > y) {
-                        sweep_down()
+                    else if (futurePos[0] > x) {
+                        sweepDown()
                         break
                     }
                 }
             }
             if (far) {
-                sweep_up()
-                sweep_down()
+                sweepUp()
+                sweepDown()
             }
         }
     }
 
-    function analyze_situtation(stones) {
-        root.own_stones_in_house = 0
-        root.rival_stones_in_house = 0
+    function analyzeSitutation(stones) {
+        root.ownStonesInHouse = 0
+        root.rivalStonesInHouse = 0
         for (var s = 0; s < stones.count; s++) {
             var stone = stones.children[s]
             if (stone.area !== -1) {
-                if (stone.team === 0) {
-                    root.own_stones_in_house ++
+                if (stone.team === Style.teamHome) {
+                    root.ownStonesInHouse ++
                 }
                 else {
-                    root.rival_stones_in_house ++
+                    root.rivalStonesInHouse ++
                 }
             }
         }
     }
 
-    function define_strategy(stones) {
+    function defineStrategy(stones) {
         var s = 0
-        var bad_stone = -1
+        var badStone = -1
         var best = -1
         var stone
-        if (root.has_last_throw) {
-            if (root.rival_stones_in_house > 0) {
-                bad_stone = -1
+        if (root.hasLastThrow) {
+            if (root.rivalStonesInHouse > 0) {
+                badStone = -1
                 best = -1
                 for (s = 0; s < stones.count; s++) {
                     stone = stones.children[s]
-                    if (stone.team === 1) {
-                        if (stone.area === 3 || stone.area === 4) {
+                    if (stone.team === Style.teamVisitor) {
+                        if (stone.area === 1 || stone.area === 2) {
                             best = 3
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 2
                         }
                         else if (stone.area === 8 && best < 3) {
                             best = 2
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 2
                         }
-                        else if (stone.area === 2 && best < 2){
+                        else if (stone.area === 0 && best < 2){
                             best = 1
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 3
                         }
-                        else if (stone.area === 5 && best < 2){
+                        else if (stone.area === 3 && best < 2){
                             best = 1
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 4
                         }
                         else if (stone.area !== -1 && best < 1){
                             best = 0
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 1
                         }
                     }
                 }
-                root.x_wanted = stones.children[bad_stone].xC
-                root.y_wanted = stones.children[bad_stone].yC
+                root.xWanted = stones.children[badStone].xC
+                root.yWanted = stones.children[badStone].yC
             }
-            else if (root.own_stones_in_house > 0) {
+            else if (root.ownStonesInHouse > 0) {
                 root.strategy = 0
                 for (s = 0; s < stones.count; s++) {
                     stone = stones.children[s]
-                    if (stone.team === 0) {
-                        if (stone.area === 4 || stone.area === 5 || stone.area === 6) {
-                            root.x_wanted = root.x_house
-                            root.y_wanted = root.y_house + 0.7 * root.r_house
+                    if (stone.team === Style.teamHome) {
+                        if (stone.area === 2 || stone.area === 3 || stone.area === 4) {
+                            root.xWanted = root.xHouse + 0.6 * root.rHouse
+                            root.yWanted = root.yHouse
                         }
-                        else if (stone.area === 3 || stone.area === 2 || stone.area === 1) {
-                            root.x_wanted = root.x_house
-                            root.y_wanted = root.y_house - 0.7 * root.r_house
+                        else if (stone.area === 1 || stone.area === 7|| stone.area === 0) {
+                            root.xWanted = root.xHouse - 0.6 * root.rHouse
+                            root.yWanted = root.yHouse
                         }
                         else if (stone.area !== -1){
-                            root.x_wanted = root.x_house
-                            root.y_wanted = root.y_house
+                            root.xWanted = root.xHouse
+                            root.yWanted = root.yHouse
                         }
                     }
                 }
             }
             else {
                 root.strategy = 0
-                root.x_wanted = root.x_house
-                root.y_wanted = root.y_house - 0.7 * root.r_house
+                root.xWanted = root.xHouse
+                root.yWanted = root.yHouse
             }
         }
         else {
-            if (root.rival_stones_in_house > 0) {
-                bad_stone = -1
+            if (root.rivalStonesInHouse > 0) {
+                badStone = -1
                 best = -1
                 for (s = 0; s < stones.count; s++) {
                     stone = stones.children[s]
-                    if (stone.team === 1) {
-                        if (stone.area === 3 || stone.area === 4) {
+                    if (stone.team === Style.teamVisitor) {
+                        if (stone.area === 1 || stone.area === 2) {
                             best = 3
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 2
                         }
                         else if (stone.area === 8 && best < 3) {
                             best = 2
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 2
                         }
-                        else if (stone.area === 2 && best < 2){
+                        else if (stone.area === 0 && best < 2){
                             best = 1
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 3
                         }
-                        else if (stone.area === 5 && best < 2){
+                        else if (stone.area === 3 && best < 2){
                             best = 1
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 4
                         }
                         else if (stone.area !== -1 && best < 1){
                             best = 0
-                            bad_stone = s
+                            badStone = s
                             root.strategy = 1
                         }
                     }
                 }
-                root.x_wanted = stones.children[bad_stone].xC
-                root.y_wanted = stones.children[bad_stone].yC
+                root.xWanted = stones.children[badStone].xC
+                root.yWanted = stones.children[badStone].yC
             }
-            else if (root.own_stones_in_house > 0) {
+            else if (root.ownStonesInHouse > 0) {
                 root.strategy = 0
                 for (s = 0; s < stones.count; s++) {
                     stone = stones.children[s]
-                    if (stone.team === 0) {
-                        if (stone.area === 4 || stone.area === 5) {
-                            root.x_wanted = root.x_house - 0.8 * root.r_house
-                            root.y_wanted = root.y_house + 0.2 * root.r_house
+                    if (stone.team === Style.teamHome) {
+                        if (stone.area === 3 || stone.area === 4) {
+                            root.xWanted = root.xHouse + 0.15 * root.rHouse
+                            root.yWanted = root.yHouse + 0.8 * root.rHouse
                         }
-                        else if (stone.area === 3 || stone.area === 2) {
-                            root.x_wanted = root.x_house - 0.8 * root.r_house
-                            root.y_wanted = root.y_house - 0.2 * root.r_house
+                        else if (stone.area === 0 || stone.area === 7) {
+                            root.xWanted = root.xHouse - 0.15 * root.rHouse
+                            root.yWanted = root.yHouse + 0.8 * root.rHouse
                         }
                         else if (stone.area !== -1){
-                            root.x_wanted = root.x_house - root.r_house
-                            root.y_wanted = root.y_house
+                            root.xWanted = root.xHouse
+                            root.yWanted = root.yHouse + 0.9 * root.rHouse
                         }
                     }
                 }
             }
             else {
                 root.strategy = 0
-                root.x_wanted = root.x_house - root.r_house
-                root.y_wanted = root.y_house
+                root.xWanted = root.xHouse
+                root.yWanted = root.yHouse
             }
         }
     }
 
-    function sweep_up() {
-        if (root.up_pressable) {
+    function sweepUp() {
+        if (root.upPressable) {
             root.pressUp()
             root.releaseUp()
-            up_cooldown.restart()
+            upCooldown.restart()
         }
     }
-    function sweep_down() {
-        if (root.down_pressable) {
+    function sweepDown() {
+        if (root.downPressable) {
             root.pressDown()
             root.releaseDown()
-            down_cooldown.restart()
+            downCooldown.restart()
         }
     }
 
     Timer{
-        id: up_cooldown
+        id: upCooldown
+
         interval: 100
         triggeredOnStart: true
-        onTriggered: root.up_pressable = ! root.up_pressable
-    }
-    Timer{
-        id: down_cooldown
-        interval: 100
-        triggeredOnStart: true
-        onTriggered: root.down_pressable = ! root.down_pressable
+        onTriggered: root.upPressable = ! root.upPressable
     }
 
-    function smart_random_direction(y_delta) {
-        if (y_delta > 0)
+    Timer{
+        id: downCooldown
+
+        interval: 100
+        triggeredOnStart: true
+        onTriggered: root.downPressable = ! root.downPressable
+    }
+
+    function smartRandomDirection(xDelta) {
+        if (xDelta > 0)
             return - 5 - Math.random() * 10
         else
             return 5 + Math.random() * 10
     }
 
-    function random_power(shoot) {
+    function randomPower(shoot) {
         if (shoot)
-            return 100 - Math.random() * 5
+            return 100 - Math.random() * 20
         else
-            return 80 + Math.random() * 15
+            return 75 + Math.random() * 10
     }
 }

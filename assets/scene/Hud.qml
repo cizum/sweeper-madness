@@ -1,70 +1,50 @@
-import QtQuick 2.2
+import QtQuick 2.9
 import "hud"
 
 Item {
-    id:root
+    id: root
+
     anchors.fill: parent
-    property int style: 0
     property bool debug: false
-    property alias power: power_bar.power
-    property alias direction: direction_bar.direction
-    property alias score: score_display.score
-    property alias total_score: score_display.total_score
-    property alias phase: indications.phase
-    property alias current_end: score_display.current_end
-    property alias ends: score_display.ends
+    property bool help: false
+    property alias score: scoreDisplay.score
+    property alias totalScore: scoreDisplay.totalScore
+    property int phase: 0
+    property alias currentEnd: scoreDisplay.currentEnd
+    property alias ends: scoreDisplay.ends
     property alias areas: areas
 
-    PowerBar {
-        id: power_bar
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: 640
-        style: root.style
-    }
-
-    DirectionBar {
-        id: direction_bar
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: 515
-        style: root.style
-    }
-
     Winner {
-        id: winner_display
+        id: winnerDisplay
+
         visible: false
-        style: root.style
     }
 
     Score {
-        id: score_display
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: 80
-        style: root.style
-    }
+        id: scoreDisplay
 
-    Indications {
-        id: indications
-        y: 675
         anchors.horizontalCenter: parent.horizontalCenter
-        color: root.style == 1 ? "#eeeeee" : "#101010"
+        y: 180
     }
 
     Areas {
         id: areas
+
         visible: root.debug
     }
 
     FuturePath {
-        id: future_path
-        visible: root.debug && (root.phase == 4 || root.phase == 5)
+        id: futurePath
+
+        visible: (root.debug || root.help) && (root.phase === 4 || root.phase === 5)
     }
 
     Stone{
         id: ghost
+
         team: 2
         opacity: 0.4
-        visible: root.debug && (root.phase == 4 || root.phase == 5)
-        style: root.style
+        visible: (root.debug || root.help) && (root.phase === 4 || root.phase === 5)
 
         Behavior on xC {
             NumberAnimation { duration: 80 }
@@ -74,32 +54,32 @@ Item {
         }
     }
 
-    function update_future_path(stone) {
-        var end_t = stone.end_time()
-        for (var i = 0; i < future_path.count; i++) {
-            var t = (i+1) * end_t / (future_path.count + 1)
-            var r = stone.future_position(t)
-            future_path.children[i].xC = r[0]
-            future_path.children[i].yC = r[1]
+    function updateFuturePath(stone) {
+        var endT = stone.endTime()
+        for (var i = 0; i < futurePath.count; i++) {
+            var t = (i+1) * endT / (futurePath.count + 1)
+            var r = stone.futurePosition(t)
+            futurePath.children[i].xC = r[0]
+            futurePath.children[i].yC = r[1]
         }
     }
 
-    function update_ghost(xC, yC) {
+    function updateGhost(xC, yC) {
         ghost.xC = xC
         ghost.yC = yC
     }
 
-    function show_winner() {
-        if (root.total_score[0] === root.total_score[1])
-            winner_display.team = -1
+    function showWinner() {
+        if (root.totalScore[0] === root.totalScore[1])
+            winnerDisplay.team = -1
         else
-            winner_display.team = root.total_score[0] > root.total_score[1] ? 0 : 1
-        winner_display.visible = true
+            winnerDisplay.team = root.totalScore[0] > root.totalScore[1] ? 0 : 1
+        winnerDisplay.visible = true
     }
 
     function initialize() {
-        winner_display.visible = false
-        score_display.clear()
+        winnerDisplay.visible = false
+        scoreDisplay.clear()
     }
 }
 

@@ -1,18 +1,18 @@
-import QtQuick 2.2
-import "../styles/classic"
-import "../styles/neon"
+import QtQuick 2.9
+import "skins"
 import "../tools.js" as Tools
+
+import krus.morten.style 1.0
 
 Item {
     id: root
-    width: root.lying ? 22 : 31
-    height: root.lying ? 22 : 15
+    width: root.laid ? 22 : 31
+    height: root.laid ? 22 : 15
     x: xC - width / 2
     y: yC - height /2
     z: 1
     property double xC: 0
     property double yC: 0
-    property int style: 0
     property int team: 0
     property double xStart: 0
     property double yStart: 0
@@ -25,7 +25,7 @@ Item {
     property double angle: 90
     property double oldxC: 0
     property double oldyC: 0
-    property bool lying: false
+    property bool laid: false
 
     Behavior on angle {
         RotationAnimation {
@@ -52,43 +52,35 @@ Item {
         angle: root.angle
     }
 
-    LauncherClassic {
-        id: launcher_classic
+    LauncherSkin {
+        id: launcherSkin
+
         anchors.fill: parent
         team: root.team
-        lying: root.lying
-        visible: root.style == 0
+        laid: root.laid
     }
 
-    LauncherNeon {
-        id: launcher_neon
-        anchors.fill: parent
-        team: root.team
-        lying: root.lying
-        visible: root.style == 1
-    }
-
-    function update(phase, current_team) {
-        root.nextPosition(phase, current_team)
+    function update(phase, currentTeam) {
+        root.nextPosition(phase, currentTeam)
         root.nextAngle()
     }
 
     function nextAngle() {
         if (root.closeTo(root.xStart, root.yStart)) {
-            root.angle = 90
-            root.lying = true
+            root.angle = 0
+            root.laid = true
         }
         else if (root.closeTo(root.xStone, root.yStone)) {
-            root.angle = 90
-            root.lying = true
+            root.angle = 0
+            root.laid = true
         }
         else if (root.closeTo(root.xEnd, root.yEnd)) {
-            root.angle = 90
-            root.lying = false
+            root.angle = 0
+            root.laid = false
         }
         else if (root.closeTo(root.xOff, root.yOff)) {
-            root.angle = root.team == 0 ? 0 : 180
-            root.lying = false
+            root.angle = root.team === Style.teamHome ? -90 : 90
+            root.laid = false
         }
         else {
             var tmpangle = root.slope(root.oldxC, root.oldyC) * 180 / Math.PI - 90
@@ -103,8 +95,8 @@ Item {
         root.oldyC = root.yC
     }
 
-    function nextPosition(phase, current_team) {
-        if (root.team === current_team) {
+    function nextPosition(phase, currentTeam) {
+        if (root.team === currentTeam) {
             if (phase < 1)
                 root.moveTo(root.xStart, root.yStart, 3)
             else if (phase > 3)

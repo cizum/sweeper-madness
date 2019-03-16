@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.9
+
+import krus.morten.style 1.0
 
 Item {
     id: root
@@ -8,8 +10,8 @@ Item {
         model: root.count
 
         Rectangle {
-            color: "#50aaaaaa"
-            border.color: "#aa101010"
+            color: Style.futurePathColor
+            border.color: Style.futurePathBorderColor
             width: 5
             height: 5
             radius: 5

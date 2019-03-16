@@ -2,16 +2,13 @@ TEMPLATE = app
 
 QT += qml quick
 
+CONFIG += qtquickcompiler
+
+HEADERS += \
+    translator.h
+
 SOURCES += main.cpp \
-    src/imagepix.cpp \
-    src/imageprovider.cpp
-
-android {
-    DEFINES += MOBILE
-}
-
-# Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+    translator.cpp
 
 # Default rules for deployment.
 include(deployment.pri)
@@ -19,6 +16,9 @@ include(deployment.pri)
 RESOURCES += \
     res.qrc
 
-HEADERS += \
-    src/imagepix.h \
-    src/imageprovider.h
+# English
+TRANSLATIONS += language/en.ts
+# Français
+TRANSLATIONS += language/fr.ts
+
+DISTFILES +=

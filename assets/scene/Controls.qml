@@ -1,12 +1,23 @@
-import QtQuick 2.2
+import QtQuick 2.9
 import "controls"
+
+import krus.morten.style 1.0
 
 Item {
     id:root
     objectName: "controls"
+
     anchors.fill: parent
     focus:true
+
     property bool playing: true
+    property bool helpSelected: false
+    property int phase: 0
+    property real directionBarXOffset: 0
+    property real directionBarYOffset: 0
+    property alias direction: directionBar.direction
+    property int power: 0
+
     signal pressUp()
     signal pressDown()
     signal pressSpace()
@@ -16,9 +27,7 @@ Item {
     signal debug()
     signal menu()
     signal mute()
-    signal changeStyle()
-    property bool mobile: version === "mobile"
-    property int phase: 0
+    signal help()
 
     Keys.onPressed: {
         if (!event.isAutoRepeat){
@@ -28,14 +37,11 @@ Item {
             else if (event.key === Qt.Key_M) {
                 root.mute()
             }
-            else if (event.key === Qt.Key_S) {
-                root.changeStyle()
-            }
             else if (root.playing) {
-                if (event.key === Qt.Key_Up) {
+                if (event.key === Qt.Key_Left) {
                     root.pressUp()
                 }
-                else if (event.key === Qt.Key_Down) {
+                else if (event.key === Qt.Key_Right) {
                     root.pressDown()
                 }
                 else if (event.key === Qt.Key_Space) {
@@ -54,10 +60,10 @@ Item {
                 root.menu()
             }
             else if (root.playing) {
-                if (event.key === Qt.Key_Up) {
+                if (event.key === Qt.Key_Left) {
                     root.releaseUp()
                 }
-                else if (event.key === Qt.Key_Down) {
+                else if (event.key === Qt.Key_Right) {
                     root.releaseDown()
                 }
             }
@@ -65,50 +71,94 @@ Item {
     }
 
     GameButton {
-        id: left_button
-        x: 20
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        text: "⇧"
+        id: leftButton
+
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        anchors.verticalCenter: spaceButton.verticalCenter
+        iconState: root.phase === 4 ? "BROOM_LEFT" : "ARROW_LEFT"
         onPressed: root.pressUp()
         onReleased: root.releaseUp()
-        visible: root.mobile && root.playing
+        visible: root.playing
+        enabled: root.phase < 5
     }
 
     GameButton {
-        id: right_button
+        id: rightButton
+
         anchors.right: parent.right
         anchors.rightMargin: 20
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        text: "⇩"
+        anchors.verticalCenter: spaceButton.verticalCenter
+        iconState: root.phase === 4 ? "BROOM_RIGHT" : "ARROW_RIGHT"
         onPressed: root.pressDown()
         onReleased: root.releaseDown()
-        visible: root.mobile && root.playing
+        visible: root.playing
+        enabled: root.phase < 5
     }
 
-    GameButton {
-        id: space_button
-        width: 650
-        height: 170
+    SpaceButton {
+        id: spaceButton
+
+        width: 252
+        height: 204
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
-        text: ""
+        y: 1022
         onPressed: root.pressSpace()
-        visible: root.mobile && root.playing
+        visible: root.playing && root.phase < 4
+        enabled: root.phase < 4
+    }
+
+    DirectionPowerBar {
+        id: directionBar
+
+        power: root.power
+        x: root.directionBarXOffset - width / 2
+        y: 960 + root.directionBarYOffset
+        phase: root.phase
+        visible: root.phase > 1 && root.phase < 5 ? 1 : 0
     }
 
     GameButton {
-        id: menu_button
-        width: 110
-        height: 80
-        x: 20
-        y: 15
-        text: "Menu"
-        textsize: 25
+        id: menuButton
+
+        anchors.right: parent.right
+        anchors.rightMargin: 110
+        y: 320
+        width: 70
+        height: 70
+        radius: 35
         onPressed: root.menu()
-        visible: root.mobile
+
+        Column {
+            spacing: 4
+            anchors.centerIn: parent
+
+            Repeater {
+                model: 3
+
+                Rectangle {
+                    color: Style.buttonTextColor
+                    width: menuButton.width * 0.5
+                    height: 5
+                }
+            }
+        }
+    }
+
+    GameButton {
+        id: helpButton
+
+        text: "?"
+        width: 70
+        height: 70
+        radius: 35
+        textSize: 40
+        anchors.left: menuButton.right
+        anchors.leftMargin: 15
+        y: 320
+        onPressed: root.help()
+        textColor: root.helpSelected ? Style.helpButtonSelectedColor : Style.buttonTextColor
+        selected: root.helpSelected
     }
 }
 

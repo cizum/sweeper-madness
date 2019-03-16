@@ -1,20 +1,22 @@
-import QtQuick 2.2
-import "styles/classic"
-import "styles/neon"
+import QtQuick 2.9
+import QtGraphicalEffects 1.0
 
-Item {
+import krus.morten.style 1.0
+
+Rectangle {
     id: root
-    width: 1280
-    height: 720
-    property int style: 0
 
-    BackgroundClassic{
-        id: background_classic
-        visible: root.style == 0
-    }
-
-    BackgroundNeon{
-        id: background_neon
-        visible: root.style == 1
+    width: 720
+    height: 1280
+    anchors.margins: -1
+    color: Style.backgroundColor
+    border.color: Style.backgroundBorderColor
+    border.width: 1
+    layer.enabled: true
+    layer.effect: InnerShadow {
+        radius: 30
+        samples: 32
+        spread: 0.3
+        color: Style.backgroundShadowColor
     }
 }

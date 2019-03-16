@@ -1,56 +1,73 @@
-import QtQuick 2.2
+import QtQuick 2.9
+import "../scene/controls"
+
+import krus.morten.style 1.0
 
 Item {
     id: root
-    width: 350
+
+    width: 570
     height: 80
+
     property var model: []
     property string name: ""
     property int index: 0
-    property color colorText: "#8989aa"
+    property color colorText: Style.choiceListColor
     property int current: model[index]
+    property bool focused: false
 
-    Row {
-        height: root.height
-        anchors.centerIn: parent
-        spacing: 40
-
-        Text {
-            id: value_text
-            width: 60
-            text: (index >= 0 && index < model.length) ? root.model[root.index] : ""
-            color: root.colorText
-            font.pixelSize: 60
-            anchors.verticalCenter: parent.verticalCenter
-            horizontalAlignment: Text.AlignHCenter
-            font.family: "PaintyPaint"
-            style: Text.Outline
-            styleColor: "#8989aa"
-        }
-
-        Text {
-            id: name_text
-            width: 150
-            color: "#8989aa"
-            text: root.name
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 50
-            font.family: "PaintyPaint"
-        }
-
+    GameButton{
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        width: 80
+        height: 80
+        textSize: 40
+        text: "+"
+        enabled: root.index < (root.model.length - 1)
+        focused: root.focused
+        onPressed: root.index = Math.min(root.index + 1, root.model.length - 1)
     }
 
-    MouseArea{
-        id: ma
-        anchors.fill: parent
-        hoverEnabled: true
-        onEntered: {
-            root.colorText = "#bbbbdd"
+    GameButton{
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 80
+        height: 80
+        textSize: 40
+        text: "-"
+        enabled: root.index > 0
+        focused: root.focused
+        onPressed: root.index = Math.max(root.index - 1, 0)
+    }
+
+    Row {
+        id: row
+        height: root.height
+        anchors.centerIn: parent
+        spacing: 30
+
+        Text {
+            id: valueText
+
+            width: 60
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 50
+            horizontalAlignment: Text.AlignHCenter
+            font.family: "I AM A PLAYER"
+            color: root.colorText
+            text: (root.index >= 0 && root.index < root.model.length) ? root.model[root.index] : ""
         }
-        onExited: {
-            root.colorText = "#8989aa"
+
+        Text {
+            id: nameText
+
+            width: 130
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 40
+            font.family: "I AM A PLAYER"
+            color: Style.choiceListColor
+            text: root.name
         }
-        onClicked: root.index = (root.index + 1) % model.length
     }
 }
 

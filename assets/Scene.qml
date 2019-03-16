@@ -1,53 +1,60 @@
-import QtQuick 2.3
+import QtQuick 2.9
 import QtGraphicalEffects 1.0
 import "tools.js" as Tools
 import "scene"
+import "scene/skins"
+
+import krus.morten.style 1.0
 
 Item {
     id: root
-    width: 1280
-    height: 720
+
+    width: 720
+    height: 1280
     visible: root.opacity > 0
+
     property int phase: 0 // phases : 0-start 1-position 2-direction 3-power 4-sweeping 5-score 6-winner
     property int players: 2
     property int ends: 1
-    property int starter: Math.floor(Math.random() * 2)
-    property int current_end: 0
-    property int stones_count: 2
-    property int current_stone: 0
+    property int starter: 0
+    property int currentEnd: 0
+    property int stonesCount: 2
+    property int currentStone: 0
     property var colors: ["#ffff55", "#cc2020", "#55ff55", "#5555ff"]
-    property int current_team: 0
+    property int currentTeam: 0
     property int gameState: 0
     property bool ready: false
-    property int style: 0
-    signal menu()
     property bool finished: true
+
+    signal menu()
+    signal tutorial()
+
+    property alias stone: stones.current
+    property alias nextStone: stones.next
 
     Behavior on opacity {
         SequentialAnimation {
-            PauseAnimation {
-                duration: 300
-            }
-            NumberAnimation {
-                duration: 500
-            }
+            PauseAnimation { duration: 100 }
+            NumberAnimation { duration: 300 }
         }
     }
 
     Inputs {
         id: inputs
-        position: sheet.y + sheet.height / 2
-        position_min: sheet.y + stone.height
-        position_max: sheet.y + sheet.height - stone.height
+
+        position: sheet.x + sheet.width / 2
+        positionMin: sheet.x + stone.width
+        positionMax: sheet.x + sheet.width - stone.width
     }
 
     Madi {
         id: madi
-        x_house: sheet.x + sheet.x_target
-        y_house: sheet.y + sheet.y_target
-        r_house: sheet.r_target
-        playing: (root.players == 1 && root.current_team == 0)
-        has_last_throw: root.starter == 0
+
+        xHouse: sheet.x + sheet.xTarget
+        yHouse: sheet.y + sheet.yTarget
+        rHouse: sheet.rTarget
+        playing: (root.players === 1 && root.currentTeam === 0)
+        hasLastThrow: root.starter === 1
         onPressSpace: root.onSpacePressed()
         onPressUp: root.onUpPressed()
         onPressDown: root.onDownPressed()
@@ -57,29 +64,40 @@ Item {
 
     Sheet {
         id: sheet
+
         anchors.centerIn: parent
-        style: root.style
+    }
+
+    Tutorial {
+        id: tutorial
+
+        anchors.fill: parent
+        phase: root.phase
+        madiPlaying: madi.playing
+        visible: hud.help
     }
 
     Hud {
         id: hud
-        power: inputs.power
-        direction: inputs.direction
+
         phase: root.phase
-        current_end: root.current_end
+        currentEnd: root.currentEnd
         ends: root.ends
-        areas.xC: sheet.x + sheet.x_target
-        areas.yC: sheet.y + sheet.y_target
-        areas.r: sheet.r_target + stone.radius
+        areas.xC: sheet.x + sheet.xTarget
+        areas.yC: sheet.y + sheet.yTarget
+        areas.r: sheet.rTarget + stone.radius
         opacity: 0.8
-        style: root.style
     }
 
     Controls {
         id: controls
+
+        directionBarXOffset: launchers.children[root.currentTeam].xC + stone.radius
+        directionBarYOffset: launchers.children[root.currentTeam].y - (sheet.y + sheet.height)
+        direction: inputs.direction
+        power: inputs.power
         playing: ! madi.playing
         onRestart: root.restart()
-        onMute: soundManager.mute = ! soundManager.mute
         onDebug: hud.debug = ! hud.debug
         onMenu: root.menu()
         onPressSpace: root.onSpacePressed()
@@ -87,51 +105,55 @@ Item {
         onPressDown: root.onDownPressed()
         onReleaseUp: root.onUpReleased()
         onReleaseDown: root.onDownReleased()
-        onChangeStyle: root.style = (root.style + 1) % 2
+        onHelp: hud.help = ! hud.help
+        helpSelected: hud.help
         phase: root.phase
-    }
-
-    SoundManager{
-        id: soundManager
-        gameState: root.gameState
-        Connections{
-            target: hud
-            onScoreChanged: soundManager.applauseForPoint()
-        }
-    }
-
-    Marks {
-        id: marks
-        style: root.style
     }
 
     Stones {
         id: stones
-        count: root.stones_count
-        onMark: if (root.ready) marks.add(x, y, a)
-        style: root.style
+
+        count: root.stonesCount
         starter: root.starter
     }
-    property alias stone: stones.current
 
     Item {
         id: launchers
+
+        anchors.fill: parent
+
+        Repeater {
+            model: 2
+
+            Launcher{
+                team: index
+                xC: team == root.currentTeam ? xStart : xOff
+                yC: team == root.currentTeam ? yStart : yOff
+                xStart: sheet.x + sheet.width / 2 - stone.width / 3
+                yStart: sheet.y + sheet.height
+                xEnd: sheet.x + sheet.width / 2 - stone.width / 3
+                yEnd: sheet.y + sheet.startLine - 20
+                xStone: stone.xC - stone.width / 3
+                yStone: stone.yC + 3 * stone.height / 4
+                xOff: team === Style.teamHome ? sheet.x + sheet.width + 40 : sheet.x - 40
+                yOff: 880
+            }
+        }
+    }
+
+    Item {
+        id: providers
+
         anchors.fill: parent
         Repeater {
             model: 2
-            Launcher{
-                style: root.style
+
+            Provider{
                 team: index
-                xC: team == root.current_team ? xStart : xOff
-                yC: team == root.current_team ? yStart : yOff
-                xStart: sheet.x
-                yStart: sheet.y + sheet.height / 2 - stone.height / 3
-                xEnd: sheet.x + sheet.start_line + 20
-                yEnd: sheet.y + sheet.height / 2 - stone.height / 3
-                xStone: stone.xC - 3 * stone.width / 4
-                yStone: stone.yC - stone.height / 3
-                xOff: 400
-                yOff: team == 0 ? 550 : 190
+                xC: xOff
+                yC: yOff
+                xOff: team === Style.teamHome ? sheet.x + sheet.width + 40 : sheet.x - 40
+                yOff: 1230
             }
         }
     }
@@ -142,48 +164,49 @@ Item {
         Repeater {
             model: 4
             Sweeper {
-                style: root.style
                 team: index < 2 ? 0 : 1
                 side: index % 2
-                xC: team == root.current_team ? xStart : xOff
-                yC: team == root.current_team ? yStart : yOff
-                xStart: sheet.x + 200
-                yStart: side == 0 ? sheet.y + sheet.height - 20 : sheet.y + 20
-                xEnd: sheet.x + 1100
-                yEnd: side == 0 ? sheet.y + sheet.height + 40 : sheet.y - 40
-                xStone: side == 0 ? stone.xC + Tools.x1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : stone.xC + Tools.x2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
-                yStone: side == 0 ? stone.yC + Tools.y1_gap(stone.width + 4, stone.height + 5, stone.direction_rad) : stone.yC + Tools.y2_gap(stone.width + 15, stone.height + 5, stone.direction_rad)
-                xOff: 450
-                yOff: side == 0 ? 550 : 190
+                xC: team == root.currentTeam ? xStart : xOff
+                yC: team == root.currentTeam ? yStart : yOff
+                xStart: side == 0 ? sheet.x + sheet.width - 20 : sheet.x + 20
+                yStart: sheet.y + sheet.height - 200
+                xEnd: side == 0 ? sheet.x + sheet.width + 40 : sheet.x - 40
+                yEnd: sheet.y + 220
+                xStone: side == 0 ? stone.xC + Tools.x1Gap(stone.width + 4, stone.height + 5, stone.directionRad) : stone.xC + Tools.x2Gap(stone.width + 15, stone.height + 5, stone.directionRad)
+                yStone: side == 0 ? stone.yC + Tools.y1Gap(stone.width + 4, stone.height + 5, stone.directionRad) : stone.yC + Tools.y2Gap(stone.width + 15, stone.height + 5, stone.directionRad)
+                xOff: side == 0 ? sheet.x + sheet.width + 40 : sheet.x - 40
+                yOff: 830
             }
         }
     }
 
     function update() {
-        launchers.children[0].update(root.phase, root.current_team)
-        launchers.children[1].update(root.phase, root.current_team)
+        launchers.children[0].update(root.phase, root.currentTeam)
+        launchers.children[1].update(root.phase, root.currentTeam)
+        providers.children[0].update(root.phase, root.currentTeam)
+        providers.children[1].update(root.phase, root.currentTeam)
         for (var s = 0; s < 4; s++)
-            sweepers.children[s].update(root.phase, root.current_team, stone)
+            sweepers.children[s].update(root.phase, root.currentTeam, stone)
         if (madi.playing)
             madi.think(root.phase, inputs.position, inputs.direction, inputs.power, stones, stone)
         switch(root.phase) {
         case 0:
-            root.p_start_update()
+            root.pStartUpdate()
             break
         case 1:
-            root.p_position_update()
+            root.pPositionUpdate()
             break
         case 2:
-            root.p_direction_update()
+            root.pDirectionUpdate()
             break
         case 3:
-            root.p_power_update()
+            root.pPowerUpdate()
             break
         case 4:
-            root.p_sweep_update()
+            root.pSweepUpdate()
             break
         case 5:
-            root.p_score_update()
+            root.pScoreUpdate()
             break
         case 6:
             break
@@ -193,11 +216,16 @@ Item {
     onPhaseChanged: {
         switch(phase) {
         case 3:
-            stone.direction = inputs.direction
+            stone.direction = inputs.direction - 90
             break
         case 4:
+            stone.direction = inputs.direction - 90
             stone.speed = inputs.speed
-            stone.f_curl_dir = inputs.direction > 0 ? -1 : 1
+            stone.fCurlDir = inputs.direction > 0 ? -1 : 1
+            if (nextStone) {
+                nextStone.target(sheet.x + sheet.width / 2, sheet.y + sheet.height - 20)
+            }
+            providers.children[1 - root.currentTeam].shoot()
             break
         }
     }
@@ -219,10 +247,10 @@ Item {
     function onUpPressed() {
         switch(root.phase) {
         case 1:
-            inputs.position_sense = -1
+            inputs.positionDirection = -1
             break
         case 4:
-            sweepers.children[root.current_team * 2 + 1].sweep()
+            sweepers.children[root.currentTeam * 2 + 1].sweep()
             stone.direction = stone.direction + 0.12
             stone.speed = stone.speed + 0.005
             break
@@ -232,10 +260,10 @@ Item {
     function onDownPressed() {
         switch(root.phase) {
         case 1:
-            inputs.position_sense = 1
+            inputs.positionDirection = 1
             break
         case 4:
-            sweepers.children[root.current_team * 2].sweep()
+            sweepers.children[root.currentTeam * 2].sweep()
             stone.direction = stone.direction - 0.12
             stone.speed = stone.speed + 0.005
             break
@@ -245,7 +273,7 @@ Item {
     function onUpReleased() {
         switch(root.phase) {
         case 1:
-            inputs.position_sense = 0
+            inputs.positionDirection = 0
             break
         }
 
@@ -253,77 +281,77 @@ Item {
     function onDownReleased() {
         switch(root.phase) {
         case 1:
-            inputs.position_sense = 0
+            inputs.positionDirection = 0
             break
         }
     }
 
-    function p_start_update() {
+    function pStartUpdate() {
         if (!root.ready)
-            root.initialize(root.current_stone)
+            root.initialize(root.currentStone)
         root.phase = 1
     }
 
-    function p_position_update() {
-        inputs.update_position()
-        stone.yC = inputs.position
+    function pPositionUpdate() {
+        inputs.updatePosition()
+        stone.xC = inputs.position
     }
 
-    function p_direction_update() {
-        stone.custom_move(0.5 - Math.random() * 0.3, 0)
-        inputs.update_direction()
-        if (stone.xC > sheet.x + sheet.start_line)
+    function pDirectionUpdate() {
+        stone.customMove(0.5 - Math.random() * 0.3, -90)
+        inputs.updateDirection()
+        if (stone.yC < sheet.y + sheet.startLine)
             root.phase = 4
     }
 
-    function p_power_update() {
-        stone.custom_move(0.5 - Math.random() * 0.3, stone.direction)
-        inputs.update_power()
-        if (stone.xC > sheet.x + sheet.start_line)
+    function pPowerUpdate() {
+        stone.customMove(0.5 - Math.random() * 0.3, stone.direction)
+        inputs.updatePower()
+        if (stone.yC < sheet.y + sheet.startLine)
             root.phase = 4
     }
 
-    function p_sweep_update() {
+    function pSweepUpdate() {
         stone.prevision()
-        hud.update_future_path(stone)
-        hud.update_ghost(stone.xC_future, stone.yC_future)
+        hud.updateFuturePath(stone)
+        hud.updateGhost(stone.xCFuture, stone.yCFuture)
         stones.update()
         collisions()
-        if (stone.xC > sheet.x + sheet.end_sweep_line || ! stones.moving())
+        if (stone.yC < sheet.y + sheet.endSweepLine || ! stones.moving())
             root.phase = 5
     }
 
-    function p_score_update() {
+    function pScoreUpdate() {
         stone.prevision()
-        hud.update_future_path(stone)
-        hud.update_ghost(stone.xC_future, stone.yC_future)
+        hud.updateFuturePath(stone)
+        hud.updateGhost(stone.xCFuture, stone.yCFuture)
         stones.update()
         collisions()
-        if (! stones.moving()) {
+        if (! stones.moving() || stones.offside()) {
             root.score()
-            if (root.current_stone >= stones.count - 1) {
-                hud.total_score = [hud.total_score[0] + hud.score[0], hud.total_score[1] + hud.score[1]]
+            if (root.currentStone >= stones.count - 1) {
+                hud.totalScore = [hud.totalScore[0] + hud.score[0], hud.totalScore[1] + hud.score[1]]
                 var v = hud.score[1] - hud.score[0]
                 if (v > 0)
                     root.starter = 1
                 else if (v < 0)
                     root.starter = 0
                 else
-                    root.current_end --
+                    root.currentEnd --
                 hud.score = [0, 0]
-                if (root.current_end == root.ends - 1) {
+                if (root.currentEnd == root.ends - 1) {
                     root.phase = 6
-                    stones.current_n = 0
-                    hud.show_winner()
+                    stones.currentN = 0
+                    hud.showWinner()
                     root.finished = true
                 }
                 else {
-                    root.new_end()
+                    root.newEnd()
                 }
             }
             else{
-                root.current_stone = (root.current_stone + 1) % stones.count
-                root.current_team = (root.current_team + 1) % 2
+                root.currentStone = (root.currentStone + 1) % stones.count
+                root.currentTeam = (root.currentTeam + 1) % 2
                 root.ready = false
                 root.phase = 0
             }
@@ -333,24 +361,26 @@ Item {
     function initialize(n) {
         root.phase = 0
         inputs.initialize()
-        stones.current_n = n
+        stones.currentN = n
         if ( n === 0) {
             stones.initialize(sheet)
-            root.current_team = root.starter
+            root.currentTeam = root.starter
         }
-        stone.xC = sheet.x + 20
-        stone.yC = sheet.y + sheet.height / 2
+        stone.initialize(sheet.x + sheet.width / 2, sheet.y + sheet.height - 20)
+        nextStone = stones.currentN < (stones.count - 1) ? stones.children[stones.currentN + 1] : undefined
+        root.initializeProvider(0)
+        root.initializeProvider(1)
         madi.ready = false
         root.ready = true
     }
 
-    function new_end(){
-        root.current_end = root.current_end + 1
-        root.current_stone = 0
-        root.current_team = root.starter
+    function newEnd(){
+        root.currentEnd = root.currentEnd + 1
+        root.currentStone = 0
+        root.currentTeam = root.starter
         root.ready = false
         for (var i = 0; i < stones.count; i++){
-            stones.children[i].d2_target = -1
+            stones.children[i].d2Target = -1
             stones.children[i].area = -1
         }
         root.phase = 0
@@ -358,14 +388,16 @@ Item {
 
     function restart(){
         root.finished = false
-        marks.clear()
+        hud.help = false
+        root.starter = Math.floor(Math.random() * 2)
+        sheet.randomColors()
         hud.initialize()
         hud.score = [0, 0]
-        hud.total_score = [0, 0]
-        root.current_end = 0
-        root.current_stone = 0
-        for (var i = 0; i < stones.count.length; i++){
-            stones.children[i].d2_target = -1
+        hud.totalScore = [0, 0]
+        root.currentEnd = 0
+        root.currentStone = 0
+        for (var i = 0; i < stones.count; i++){
+            stones.children[i].d2Target = -1
             stones.children[i].area = -1
         }
         root.ready = false
@@ -374,20 +406,20 @@ Item {
 
     function score() {
         var scores = [0, 0]
-        var dmax = sheet.r_target + stone.radius
+        var dmax = sheet.rTarget + stone.radius
         var array = []
         var k = 0
         for (var i = 0; i < stones.count; i++){
-            var d = root.dsquare_target(stones.children[i].xC, stones.children[i].yC)
+            var d = root.dsquareTarget(stones.children[i].xC, stones.children[i].yC)
             if (d < dmax * dmax){
-                stones.children[i].d2_target = d
+                stones.children[i].d2Target = d
                 array[k] = [i, d]
                 k ++
             }
             else {
-                stones.children[i].d2_target = -1
+                stones.children[i].d2Target = -1
             }
-            stones.children[i].area = root.find_area(stones.children[i].xC, stones.children[i].yC)
+            stones.children[i].area = root.findArea(stones.children[i].xC, stones.children[i].yC)
         }
         array.sort(Tools.compare)
         if (array.length > 0){
@@ -409,25 +441,24 @@ Item {
         for (var i = 0; i < stones.count; i++) {
             for (var j = i + 1; j < stones.count; j++) {
                 var d = Tools.dsquare(stones.children[i].xC, stones.children[i].yC, stones.children[j].xC, stones.children[j].yC)
-                if (d < stone.width * stone.width){
-                    if (stones.children[i].speed > 0 || stones.children[j].speed > 0)
-                        soundManager.collide()
-                    Tools.solve_collision(stones.children[j], stones.children[i])
+                var diff = d - stone.width * stone.width
+                if (diff < 0){
+                    Tools.solveCollision(stones.children[j], stones.children[i])
                 }
             }
         }
     }
 
-    function dsquare_target(xc, yc) {
-        var xt = sheet.x + sheet.x_target
-        var yt = sheet.y + sheet.y_target
+    function dsquareTarget(xc, yc) {
+        var xt = sheet.x + sheet.xTarget
+        var yt = sheet.y + sheet.yTarget
         return Tools.dsquare(xc, yc, xt, yt)
     }
 
-    function find_area(xc, yc) {
-        var xt = sheet.x + sheet.x_target
-        var yt = sheet.y + sheet.y_target
-        var rt = sheet.r_target + stone.radius
+    function findArea(xc, yc) {
+        var xt = sheet.x + sheet.xTarget
+        var yt = sheet.y + sheet.yTarget
+        var rt = sheet.rTarget + stone.radius
         var a = Tools.slope(xc, yc, xt, yt)
         var r2 = Tools.dsquare(xc, yc, xt, yt)
         if (r2 > rt * rt) {
@@ -439,5 +470,20 @@ Item {
         else {
             return 8
         }
+    }
+
+    function initializeProvider(team) {
+        var startStoneIndex = root.currentStone + 1 + (root.currentTeam === team ? 1 : 0)
+        startStoneIndex = startStoneIndex < stones.count ? startStoneIndex : -1
+        var endStoneIndex = root.currentStone + 2 + (root.currentTeam === team ? 2 : 1)
+        endStoneIndex = endStoneIndex < stones.count ? endStoneIndex : -1
+        var xOff = providers.children[team].xOff
+        var yOff = providers.children[team].yOff
+        providers.children[team].xStart = startStoneIndex != -1 ? stones.children[startStoneIndex].xC + (team === Style.teamHome ? 28 : -28) : xOff
+        providers.children[team].yStart = startStoneIndex != -1 ? stones.children[startStoneIndex].yC : yOff
+        providers.children[team].xEnd = endStoneIndex != -1 ? stones.children[endStoneIndex].xC + (team === Style.teamHome ? 28 : -28) : xOff
+        providers.children[team].yEnd = endStoneIndex != -1 ? stones.children[endStoneIndex].yC : yOff
+        providers.children[team].xStone = root.currentStone < stones.count ?  stones.children[root.currentStone].xC : xOff
+        providers.children[team].yStone = root.currentStone < stones.count ?  stones.children[root.currentStone].yC : yOff
     }
 }

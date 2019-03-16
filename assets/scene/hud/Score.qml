@@ -1,68 +1,73 @@
-import QtQuick 2.2
+import QtQuick 2.9
 import QtGraphicalEffects 1.0
+
+import krus.morten.style 1.0
 
 Item {
     id: root
-    width: 600
-    height: 100
-    property var total_score: [0, 0]
+
+    width: 550
+    height: 200
+
+    property var totalScore: [0, 0]
     property var score: [0, 0]
-    property int current_end: 0
+    property int currentEnd: 0
     property int ends: 1
-    property int style: 0
-    property var colors: ["#ffff55", "#cc2020", "#ffbb00", "#00bbff"]
 
     TextNum {
-        id: end_score_text_1
+        id: endScoreText1
+
         text: root.score[1]
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: - root.width / 8
-        anchors.verticalCenterOffset: root.height / 4
-        color: root.style == 0 ? root.colors[1] : root.colors[3]
-        font.pixelSize: 40
+        anchors.horizontalCenterOffset: - root.width / 3
+        anchors.verticalCenterOffset: -root.height / 2
+        color: Style.redPlayerColor
+        font.pixelSize: 70
     }
 
     TextNum {
-        id: end_score_text_2
+        id: endScoreText2
+
         text: root.score[0]
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: root.width / 8
-        anchors.verticalCenterOffset: root.height / 4
-        color: root.style == 0 ? root.colors[0] : root.colors[2]
-        font.pixelSize: 40
+        anchors.horizontalCenterOffset: root.width / 3
+        anchors.verticalCenterOffset: -root.height / 2
+        color: Style.yellowPlayerColor
+        font.pixelSize: 70
     }
 
-    Text{
+    TextNum{
         id: end
-        text: (root.current_end + 1) + "/" + root.ends
-        color: root.style == 0 ? "#101010" : "#aaaaaa"
-        font.pixelSize: 30
-        font.family: "PaintyPaint"
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: root.height / 4
+
+        text: (root.currentEnd + 1) + "/" + root.ends
+        font.pixelSize: 60
+        anchors.bottom: parent.bottom
+        color: Style.endColor
     }
 
     TextNum {
-        id: total_score_text_1
-        text: root.total_score[1]
+        id: totalScoreText1
+
+        text: root.totalScore[1]
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: - root.width / 4
-        anchors.verticalCenterOffset:  - root.height / 4
-        color: root.style == 0 ? root.colors[1] : root.colors[3]
+        anchors.horizontalCenterOffset: - root.width / 2
+        anchors.verticalCenterOffset:  - root.height / 2
+        color: Style.redPlayerColor
     }
 
     TextNum {
-        id: total_score_text_2
-        text: root.total_score[0]
+        id: totalScoreText2
+
+        text: root.totalScore[0]
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: root.width / 4
-        anchors.verticalCenterOffset:  - root.height / 4
-        color: root.style == 0 ? root.colors[0] : root.colors[2]
+        anchors.horizontalCenterOffset: root.width / 2
+        anchors.verticalCenterOffset:  - root.height / 2
+        color: Style.yellowPlayerColor
     }
 
     function clear() {
-        root.total_score[0] = 0
-        root.total_score[1] = 0
+        root.totalScore[0] = 0
+        root.totalScore[1] = 0
         root.score[0] = 0
         root.score[1] = 0
     }

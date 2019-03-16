@@ -1,77 +1,71 @@
-import QtQuick 2.0
+import QtQuick 2.9
+import "../tools.js" as Tools
 
-Item {
+QtObject {
     id: root
+
     property double position: 50
     property double power: 0
     property double direction: -20
-    property double speed: root.power < 60 ? 2 : root.power / 30
+    property double speed: Tools.powerToSpeed(root.power)
+    property double positionMin: 0
+    property double positionMax: 100
+    property int positionDirection: 0
+    property int positionVelocity: 2
+    readonly property double powerMax: 100
+    property int powerDirection: 1
+    property double powerGap: 0.75
+    property double directionRad: direction * Math.PI / 180
+    readonly property double directionMax: 25
+    property int directionDirection: 1
+    property double directionGap: 0.4
 
-    property double position_min: 0
-    property double position_max: 100
-    property int position_sense: 0
-    readonly property double power_max: 100
-    property int power_sense: 1
-    property double power_gap: 1
-    property double direction_rad: direction * Math.PI / 180
-    readonly property double direction_max: 25
-    property int direction_sense: 1
-    property double direction_gap: 0.4
-
-    function update_position() {
-        var new_position = root.position + root.position_sense * 2
-        if (new_position >= root.position_max) {
-            root.position = root.position_max
-        }
-        else if (new_position <= root.position_min) {
-            root.position = root.position_min
-        }
-        else
-            root.position = new_position
+    function updatePosition() {
+        root.position = Math.min(Math.max(root.position + root.positionDirection * root.positionVelocity, root.positionMin), root.positionMax)
     }
 
-    function update_direction() {
-        var evo_speed = root.direction_gap + 0.1 * (root.direction_max - Math.abs(root.direction))
-        var new_dir = root.direction + root.direction_sense * evo_speed
-        if (new_dir >= root.direction_max) {
-            root.direction_sense = -1
-            if (root.direction_gap < 0.8)
-                root.direction_gap = root.direction_gap + 0.2
-            root.direction = root.direction_max
+    function updateDirection() {
+        var evoSpeed = root.directionGap + 0.1 * (root.directionMax - Math.abs(root.direction))
+        var newDir = root.direction + root.directionDirection * evoSpeed
+        if (newDir >= root.directionMax) {
+            root.directionDirection = -1
+            if (root.directionGap < 0.8)
+                root.directionGap = root.directionGap + 0.2
+            root.direction = root.directionMax
         }
-        else if (new_dir <= - root.direction_max) {
-            root.direction_sense = 1
-            root.direction = - root.direction_max
+        else if (newDir <= - root.directionMax) {
+            root.directionDirection = 1
+            root.direction = - root.directionMax
         }
         else
-            root.direction = new_dir
+            root.direction = newDir
     }
 
-    function update_power() {
-        var evo_speed = root.power_gap + 0.05 * root.power
-        var new_power = root.power + root.power_sense * evo_speed
-        if (new_power >= root.power_max) {
-            root.power_sense = -1
-            if (root.power_gap < 4)
-                root.power_gap = root.power_gap + 1
-            root.power = root.power_max
+    function updatePower() {
+        var velocity = root.powerGap + 0.05 * root.power
+        var newPower = root.power + root.powerDirection * velocity
+        if (newPower >= root.powerMax) {
+            root.powerDirection = -1
+            if (root.powerGap < 4)
+                root.powerGap = root.powerGap + 1
+            root.power = root.powerMax
         }
-        else if (new_power <= 0) {
-            root.power_sense = 1
+        else if (newPower <= 0) {
+            root.powerDirection = 1
             root.power = 0
         }
         else
-            root.power = new_power
+            root.power = newPower
     }
 
     function initialize() {
-        root.position = (root.position_min + root.position_max) / 2
-        root.position_sense = 0
+        root.position = (root.positionMin + root.positionMax) / 2
+        root.positionDirection = 0
         root.power = 0
-        root.power_sense = 1
-        root.power_gap = 1
+        root.powerDirection = 1
+        root.powerGap = 1
         root.direction = -20
-        root.direction_sense = 1
-        root.direction_gap = 1
+        root.directionDirection = 1
+        root.directionGap = 1
     }
 }
