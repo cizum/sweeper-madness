@@ -42,3 +42,11 @@ The game can be played using touch buttons or using the following keyboard keys:
 - Then, validate the direction of the throw using SPACE key, once again.
 - And validate the power of the throw using SPACE key, one more time.
 - Finallly, press LEFT and RIGHT arrows to sweep repectively left and right.
+
+## Packages
+
+Available on Android:
+https://play.google.com/store/apps/details?id=krus.morten.sweepermadness
+
+Available on Ubuntu Touch:
+https://open-store.io/app/sm.lduboeuf
